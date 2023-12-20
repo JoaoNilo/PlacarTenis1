@@ -1,0 +1,578 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background1"
+    android:visibility="visible"
+    tools:context=".GameSettings">
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="false"
+        android:editable="false"
+        android:ems="10"
+        android:enabled="false"
+        android:focusable="false"
+        android:inputType="none"
+        android:text="TIEBREAK POINTS"
+        android:textColor="@android:color/darker_gray"
+        android:textSize="12sp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@+id/txtMatchTiebreak"
+        app:layout_constraintStart_toStartOf="@+id/etAdvantage"
+        app:layout_constraintTop_toTopOf="@+id/txtMatchTiebreak"
+        tools:ignore="TouchTargetSizeCheck" />
+
+    <EditText
+        android:id="@+id/txtMatchTiebreak"
+        android:layout_width="43dp"
+        android:layout_height="32dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/btn_border_start"
+        android:ems="10"
+        android:focusable="false"
+        android:gravity="center|center_vertical"
+        android:inputType="none"
+        android:maxLength="2"
+        android:text="10"
+        android:textColor="#FFFFFFFF"
+        android:textSize="14sp"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="@+id/swMatchTieBreak"
+        app:layout_constraintTop_toBottomOf="@+id/swMatchTieBreak"
+        tools:ignore="TouchTargetSizeCheck" />
+
+    <EditText
+        android:id="@+id/txtSetsPerMatch"
+        android:layout_width="43dp"
+        android:layout_height="32dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/btn_border_start"
+        android:clickable="false"
+        android:ems="10"
+        android:focusable="false"
+        android:gravity="center|center_vertical"
+        android:inputType="none"
+        android:maxLength="1"
+        android:text="3"
+        android:textColor="#FFFFFFFF"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="@+id/txtGamesPerSet"
+        app:layout_constraintTop_toBottomOf="@+id/txtGamesPerSet"
+        tools:ignore="TouchTargetSizeCheck" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="false"
+        android:editable="false"
+        android:ems="10"
+        android:enabled="false"
+        android:focusable="false"
+        android:inputType="none"
+        android:text="SETS PER MATCH"
+        android:textColor="#FFFFFFFF"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@+id/txtSetsPerMatch"
+        app:layout_constraintStart_toStartOf="@+id/etAdvantage"
+        app:layout_constraintTop_toTopOf="@+id/txtSetsPerMatch"
+        app:layout_constraintVertical_bias="0.0"
+        tools:ignore="TouchTargetSizeCheck" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="false"
+        android:editable="false"
+        android:ems="10"
+        android:enabled="false"
+        android:focusable="false"
+        android:inputType="none"
+        android:text="TIEBREAK"
+        android:textColor="@color/white"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@+id/swTiebreak"
+        app:layout_constraintStart_toStartOf="@+id/etAdvantage"
+        app:layout_constraintTop_toTopOf="@+id/swTiebreak"
+        tools:ignore="TouchTargetSizeCheck" />
+
+    <ImageView
+        android:id="@+id/imgPlayer2Serv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/btn_border_sets"
+        android:scaleX="0.8"
+        android:scaleY="0.8"
+        app:layout_constraintBottom_toBottomOf="@+id/txtPlayer2_Points"
+        app:layout_constraintStart_toStartOf="@+id/imgPlayer1Serv"
+        app:layout_constraintTop_toTopOf="@+id/txtPlayer2_Points"
+        app:srcCompat="@drawable/arrow_darkgray" />
+
+    <ImageView
+        android:id="@+id/imgPlayer1Serv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="20dp"
+        android:layout_marginRight="20dp"
+        android:background="@drawable/btn_border_sets"
+        android:scaleX="0.8"
+        android:scaleY="0.8"
+        app:layout_constraintBottom_toBottomOf="@+id/txtPlayer1_Points"
+        app:layout_constraintEnd_toStartOf="@+id/txtPlayer1_Points"
+        app:layout_constraintTop_toTopOf="@+id/txtPlayer1_Points"
+        app:layout_constraintVertical_bias="0.25"
+        app:srcCompat="@drawable/arrow_darkgray" />
+
+    <EditText
+        android:id="@+id/txtCurrentSet"
+        android:layout_width="34dp"
+        android:layout_height="34dp"
+        android:layout_marginTop="30dp"
+        android:background="@drawable/btn_border_start"
+        android:clickable="false"
+        android:editable="false"
+        android:ems="10"
+        android:focusable="false"
+        android:gravity="center|center_vertical"
+        android:inputType="none"
+        android:maxLength="1"
+        android:text="0"
+        android:textColor="#FFFFFFFF"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="@+id/txtPlayer2_Set3"
+        app:layout_constraintTop_toBottomOf="@+id/txtPlayer2_Set2"
+        tools:ignore="TouchTargetSizeCheck"
+        tools:text="10" />
+
+    <EditText
+        android:id="@+id/lbCurrentSet"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:clickable="false"
+        android:editable="false"
+        android:ems="10"
+        android:enabled="false"
+        android:focusable="false"
+        android:gravity="right|center_vertical"
+        android:inputType="none"
+        android:text="CURRENT SET"
+        android:textColor="#FFFFFFFF"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toStartOf="@+id/txtCurrentSet"
+        app:layout_constraintTop_toTopOf="@+id/txtCurrentSet"
+        tools:ignore="TouchTargetSizeCheck" />
+
+    <EditText
+        android:id="@+id/txtPlayer2_Set3"
+        android:layout_width="34dp"
+        android:layout_height="34dp"
+        android:layout_marginStart="20dp"
+        android:background="@drawable/btn_border_start"
+        android:clickable="false"
+        android:ems="10"
+        android:focusable="false"
+        android:gravity="center|center_vertical"
+        android:inputType="none"
+        android:maxLength="1"
+        android:text="0"
+        android:textColor="#FFFFFFFF"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toEndOf="@+id/txtPlayer1_Set3"
+        app:layout_constraintStart_toEndOf="@+id/txtPlayer2_Set2"
+        app:layout_constraintTop_toTopOf="@+id/txtPlayer2_Set2"
+        tools:ignore="TouchTargetSizeCheck" />
+
+    <EditText
+        android:id="@+id/txtPlayer2_Points"
+        android:layout_width="56dp"
+        android:layout_height="36dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/btn_border_start"
+        android:clickable="false"
+        android:ems="10"
+        android:focusable="false"
+        android:gravity="center|center_vertical"
+        android:inputType="none"
+        android:maxLength="2"
+        android:text="00"
+        android:textColor="#FFFFFFFF"
+        android:textSize="24sp"
+        app:layout_constraintStart_toStartOf="@+id/txtPlayer1_Points"
+        app:layout_constraintTop_toBottomOf="@+id/lbPlayer3Score"
+        tools:ignore="TouchTargetSizeCheck" />
+
+    <EditText
+        android:id="@+id/lbPlayer3Score"
+        android:layout_width="136dp"
+        android:layout_height="43dp"
+        android:layout_marginTop="55dp"
+        android:clickable="false"
+        android:editable="false"
+        android:ems="10"
+        android:enabled="false"
+        android:focusable="false"
+        android:gravity="center|center_vertical"
+        android:inputType="none"
+        android:text="PLAYER2 SCORE"
+        android:textColor="#FFFFFFFF"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="@+id/lbPlayer1Score"
+        app:layout_constraintTop_toBottomOf="@+id/lbPlayer1Score"
+        tools:ignore="TouchTargetSizeCheck" />
+
+    <EditText
+        android:id="@+id/txtPlayer2_Set1"
+        android:layout_width="34dp"
+        android:layout_height="34dp"
+        android:layout_marginStart="30dp"
+        android:background="@drawable/btn_border_start"
+        android:clickable="false"
+        android:ems="10"
+        android:focusable="false"
+        android:gravity="center|center_vertical"
+        android:inputType="none"
+        android:maxLength="1"
+        android:text="0"
+        android:textColor="#FFFFFFFF"
+        android:textSize="24sp"
+        app:layout_constraintStart_toEndOf="@+id/txtPlayer2_Points"
+        app:layout_constraintTop_toTopOf="@+id/txtPlayer2_Points"
+        tools:ignore="TouchTargetSizeCheck" />
+
+    <EditText
+        android:id="@+id/txtPlayer2_Set2"
+        android:layout_width="34dp"
+        android:layout_height="34dp"
+        android:layout_marginStart="20dp"
+        android:background="@drawable/btn_border_start"
+        android:clickable="false"
+        android:ems="10"
+        android:focusable="false"
+        android:gravity="center|center_vertical"
+        android:inputType="none"
+        android:maxLength="1"
+        android:text="0"
+        android:textColor="#FFFFFFFF"
+        android:textSize="24sp"
+        app:layout_constraintStart_toEndOf="@+id/txtPlayer2_Set1"
+        app:layout_constraintTop_toTopOf="@+id/txtPlayer2_Set1"
+        tools:ignore="TouchTargetSizeCheck" />
+
+    <EditText
+        android:id="@+id/txtPlayer1_Set2"
+        android:layout_width="34dp"
+        android:layout_height="34dp"
+        android:layout_marginEnd="20dp"
+        android:background="@drawable/btn_border_start"
+        android:clickable="false"
+        android:ems="10"
+        android:focusable="false"
+        android:gravity="center|center_vertical"
+        android:inputType="none"
+        android:maxLength="1"
+        android:text="0"
+        android:textColor="#FFFFFFFF"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toStartOf="@+id/txtPlayer1_Set3"
+        app:layout_constraintTop_toTopOf="@+id/txtPlayer1_Set1"
+        tools:ignore="TouchTargetSizeCheck" />
+
+    <EditText
+        android:id="@+id/txtPlayer1_Set3"
+        android:layout_width="34dp"
+        android:layout_height="34dp"
+        android:layout_marginStart="10dp"
+        android:background="@drawable/btn_border_start"
+        android:clickable="false"
+        android:ems="10"
+        android:focusable="false"
+        android:gravity="center|center_vertical"
+        android:inputType="none"
+        android:maxLength="1"
+        android:text="0"
+        android:textColor="#FFFFFFFF"
+        android:textSize="24sp"
+        app:layout_constraintStart_toEndOf="@+id/lbPlayer1Score"
+        app:layout_constraintTop_toTopOf="@+id/txtPlayer1_Set2"
+        tools:ignore="TouchTargetSizeCheck" />
+
+    <EditText
+        android:id="@+id/txtPlayer1_Set1"
+        android:layout_width="34dp"
+        android:layout_height="34dp"
+        android:layout_marginEnd="20dp"
+        android:background="@drawable/btn_border_start"
+        android:clickable="false"
+        android:ems="10"
+        android:focusable="false"
+        android:gravity="center|center_vertical"
+        android:inputType="none"
+        android:maxLength="1"
+        android:text="0"
+        android:textColor="#FFFFFFFF"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toStartOf="@+id/txtPlayer1_Set2"
+        app:layout_constraintTop_toTopOf="@+id/txtPlayer1_Points"
+        tools:ignore="TouchTargetSizeCheck" />
+
+    <EditText
+        android:id="@+id/txtPlayer1_Points"
+        android:layout_width="56dp"
+        android:layout_height="36dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="30dp"
+        android:background="@drawable/btn_border_start"
+        android:clickable="false"
+        android:ems="10"
+        android:focusable="false"
+        android:gravity="center|center_vertical"
+        android:inputType="none"
+        android:maxLength="2"
+        android:text="00"
+        android:textColor="#FFFFFFFF"
+        android:textSize="24sp"
+        app:layout_constraintEnd_toStartOf="@+id/txtPlayer1_Set1"
+        app:layout_constraintTop_toBottomOf="@+id/lbPlayer1Score"
+        tools:ignore="TouchTargetSizeCheck" />
+
+    <EditText
+        android:id="@+id/lbPlayer1Score"
+        android:layout_width="136dp"
+        android:layout_height="43dp"
+        android:layout_marginStart="160dp"
+        android:clickable="false"
+        android:editable="false"
+        android:ems="10"
+        android:enabled="false"
+        android:focusable="false"
+        android:gravity="center|center_vertical"
+        android:inputType="none"
+        android:text="PLAYER1 SCORE"
+        android:textColor="#FFFFFFFF"
+        android:textSize="14sp"
+        app:layout_constraintStart_toEndOf="@+id/swAdvantage"
+        app:layout_constraintTop_toTopOf="@+id/swAdvantage"
+        tools:ignore="TouchTargetSizeCheck" />
+
+    <EditText
+        android:id="@+id/lbPointsPerGame"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="false"
+        android:editable="false"
+        android:ems="10"
+        android:enabled="false"
+        android:focusable="false"
+        android:inputType="none"
+        android:text="TIEBREAK POINTS"
+        android:textColor="#FFFFFFFF"
+        android:textSize="12sp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@+id/txtPointsPerGame"
+        app:layout_constraintStart_toStartOf="@+id/etAdvantage"
+        app:layout_constraintTop_toTopOf="@+id/txtPointsPerGame"
+        tools:ignore="TouchTargetSizeCheck" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="false"
+        android:ems="10"
+        android:enabled="false"
+        android:focusable="false"
+        android:inputType="none"
+        android:text="MATCH TIEBREAK"
+        android:textColor="@android:color/darker_gray"
+        android:textSize="12sp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@+id/swMatchTieBreak"
+        app:layout_constraintStart_toStartOf="@+id/etAdvantage"
+        app:layout_constraintTop_toTopOf="@+id/swMatchTieBreak"
+        app:layout_constraintVertical_bias="0.0"
+        tools:ignore="TouchTargetSizeCheck" />
+
+    <EditText
+        android:id="@+id/txtPointsPerGame"
+        android:layout_width="43dp"
+        android:layout_height="32dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/btn_border_start"
+        android:ems="10"
+        android:focusable="false"
+        android:gravity="center|center_vertical"
+        android:inputType="none"
+        android:maxLength="2"
+        android:text="7"
+        android:textColor="#FFFFFFFF"
+        android:textSize="14sp"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="@+id/swTiebreak"
+        app:layout_constraintTop_toBottomOf="@+id/swTiebreak"
+        tools:ignore="TouchTargetSizeCheck" />
+
+    <EditText
+        android:id="@+id/lbAlternateService"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="false"
+        android:editable="false"
+        android:ems="10"
+        android:enabled="false"
+        android:inputType="textNoSuggestions"
+        android:text="ALTERNATE SERVICE"
+        android:textColor="@color/white"
+        android:textSize="12sp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@+id/swTeste"
+        app:layout_constraintStart_toStartOf="@+id/etAdvantage"
+        app:layout_constraintTop_toTopOf="@+id/swTeste"
+        app:layout_constraintVertical_bias="1.0"
+        tools:ignore="TouchTargetSizeCheck" />
+
+    <Switch
+        android:id="@+id/swTeste"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/white"
+        android:textSize="12sp"
+        android:thumb="@drawable/thumb_32x32"
+        android:track="@drawable/track2_on"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="@+id/swTiebreak"
+        app:layout_constraintTop_toBottomOf="@+id/txtSetsPerMatch"
+        tools:ignore="TouchTargetSizeCheck,DuplicateSpeakableTextCheck" />
+
+    <Switch
+        android:id="@+id/swMatchTieBreak"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:textColor="#FFF0F0F0"
+        android:textSize="12sp"
+        android:thumb="@drawable/thumb_32x32"
+        android:track="@drawable/track2_on"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="@+id/swTeste"
+        app:layout_constraintTop_toBottomOf="@+id/swTeste"
+        tools:ignore="TouchTargetSizeCheck" />
+
+    <Switch
+        android:id="@+id/swTiebreak"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:scaleX="1"
+        android:scaleY="1"
+        android:textColor="#FFF0F0F0"
+        android:textSize="12sp"
+        android:thumb="@drawable/thumb_32x32"
+        android:track="@drawable/track2_on"
+        app:layout_constraintEnd_toEndOf="@+id/swAdvantage"
+        app:layout_constraintTop_toBottomOf="@+id/swAdvantage"
+        tools:ignore="TouchTargetSizeCheck" />
+
+    <Button
+        android:id="@+id/btSettingsBack"
+        android:layout_width="265dp"
+        android:layout_height="36dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/btn_border_new"
+        android:text=" BACK TO SCOREBOARD"
+        android:textColor="#FFFFFFFF"
+        app:layout_constraintEnd_toEndOf="@+id/txtPlayer1_Set3"
+        app:layout_constraintStart_toStartOf="@+id/imgPlayer2Serv"
+        app:layout_constraintTop_toBottomOf="@+id/lbCurrentSet"
+        tools:ignore="TouchTargetSizeCheck" />
+
+    <Switch
+        android:id="@+id/swAdvantage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:textColor="#FFF0F0F0"
+        android:textSize="14sp"
+        android:thumb="@drawable/thumb_32x32"
+        android:track="@drawable/track2_on"
+        app:layout_constraintBottom_toBottomOf="@+id/etAdvantage"
+        app:layout_constraintStart_toEndOf="@+id/etAdvantage"
+        app:layout_constraintTop_toTopOf="@+id/etAdvantage"
+        tools:ignore="TouchTargetSizeCheck" />
+
+    <EditText
+        android:id="@+id/txtGamesPerSet"
+        android:layout_width="43dp"
+        android:layout_height="32dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/btn_border_start"
+        android:clickable="false"
+        android:editable="false"
+        android:ems="10"
+        android:focusable="false"
+        android:gravity="center|center_vertical"
+        android:inputType="textNoSuggestions"
+        android:maxLength="1"
+        android:text="6"
+        android:textColor="#FFFFFFFF"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="@+id/txtPointsPerGame"
+        app:layout_constraintTop_toBottomOf="@+id/txtPointsPerGame" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="false"
+        android:editable="false"
+        android:ems="10"
+        android:enabled="false"
+        android:inputType="textNoSuggestions"
+        android:text="GAMES PER SET"
+        android:textColor="#FFFFFFFF"
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@+id/txtGamesPerSet"
+        app:layout_constraintStart_toStartOf="@+id/etAdvantage"
+        app:layout_constraintTop_toTopOf="@+id/txtGamesPerSet"
+        tools:ignore="TouchTargetSizeCheck" />
+
+    <!-- Player1 Points -->
+
+    <!-- Player2 Points -->
+
+    <!-- Player1 Set1 -->
+
+    <!-- Player2 Set1 -->
+
+    <!-- Player1 Set2 -->
+
+    <!-- Player2 Set2 -->
+
+    <!-- Player1 Set3 -->
+
+    <!-- Player2 Set3 -->
+
+    <!-- Current Set -->
+
+
+    <EditText
+        android:id="@+id/etAdvantage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="15dp"
+        android:clickable="false"
+        android:editable="false"
+        android:ems="10"
+        android:enabled="false"
+        android:inputType="textNoSuggestions"
+        android:text="ADVANTAGE"
+        android:textColor="@color/white"
+        android:textSize="12sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="TouchTargetSizeCheck" />
+
+</android.support.constraint.ConstraintLayout>

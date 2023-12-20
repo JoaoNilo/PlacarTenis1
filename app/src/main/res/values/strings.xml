@@ -1,0 +1,37 @@
+<resources>
+    <string name="app_name">PlacarTenis1</string>
+    <string name="adapter_name">PLACAR PLT-01</string>
+    <string name="CLIENT_CHARACTERISTIC_CONFIG">00002902-0000-1000-8000-00805f9b34fb"</string>
+    <string name="DialoagSaveSettingsTitle">Game Settings</string>
+    <string name="DialoagSaveSettings">Settings have been changed.\nSave new settings?</string>
+    <string name="ButtonConfirm">Confirm</string>
+    <string name="ButtonDismiss">Dismiss</string>
+
+    <!-- English Screen -->
+    <string name="Player1Name">NAME 1</string>
+    <string name="Player2Name">NAME 2</string>
+    <string name="StartTimer">Start</string>
+    <string name="Pause">Pause</string>
+    <string name="Start">Start</string>
+    <string name="Advantage">Ad</string>
+
+    <string name="DialoagNewMatchTitle">New Match</string>
+    <string name="DialogNewMatch">A new match is about to be started.\nIf the current match is not finished\ncurrent match status will be lost.\nStart a "NEW MATCH"?</string>
+
+    <string name="DialoagEndMatchTitle">Match Alert!</string>
+    <string name="DialogIsMatchFinished">This match is about to be FINISHED!.\nNo further modifications will be accepted for this match.\nDo you REALLY want to proceed?</string>
+
+    <string name="DialogGameOverTitle">Game Over!</string>
+    <string name="ButtonGameOverConfirm">OK</string>
+    <string name="title_activity_options">OptionsActivity</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <!-- TODO: Remove or change this placeholder text -->
+
+</resources>

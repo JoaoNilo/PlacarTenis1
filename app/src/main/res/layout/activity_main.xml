@@ -8,320 +8,419 @@
     android:orientation="horizontal"
     tools:context=".MainActivity">
 
-    <Button
-        android:id="@+id/btNew"
-        android:layout_width="80dp"
-        android:layout_height="60dp"
-        android:layout_marginTop="2dp"
-        android:layout_marginEnd="20dp"
-        android:background="#75676767"
-        android:text="NEW"
-        android:textAlignment="center"
-        android:textColor="#FDFCFC"
-        android:textSize="20sp"
-        app:backgroundTint="#3C3B3B"
-        app:layout_constraintEnd_toStartOf="@+id/txtTimerDigits"
-        app:layout_constraintTop_toTopOf="@+id/txtTimerDigits" />
-
-    <ImageButton
-        android:id="@+id/btPlayer1Down"
+    <ImageView
+        android:id="@+id/imgPlayer2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:background="@color/black"
-        app:layout_constraintBottom_toBottomOf="@+id/txtPlayer1Games"
-        app:layout_constraintStart_toEndOf="@+id/txtPlayer1Games"
-        app:srcCompat="@drawable/ic_arrow_down_nilo" />
+        app:layout_constraintBottom_toBottomOf="@+id/txtPlayer2Tens"
+        app:layout_constraintStart_toStartOf="@+id/imgPlayer1"
+        app:srcCompat="@drawable/player2" />
 
     <ImageView
-        android:id="@+id/imgPlayer2ServArrow"
+        android:id="@+id/imgPlayer1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginLeft="30dp"
+        app:layout_constraintBottom_toBottomOf="@+id/txtPlayer1Tens"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/player1" />
+
+    <ImageView
+        android:id="@+id/imgBattery"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
-        android:layout_marginEnd="6dp"
-        app:layout_constraintEnd_toStartOf="@+id/txtPlayer2Games"
-        app:layout_constraintTop_toTopOf="@+id/txtPlayer2Games"
-        app:srcCompat="@drawable/ic_arrow_right_nilo"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="@+id/txtPlayer2Set3"
+        app:layout_constraintTop_toBottomOf="@+id/txtPlayer2Set3"
+        app:srcCompat="@drawable/battery_00_32x32"
         tools:visibility="visible" />
+
+    <ImageView
+        android:id="@+id/imgCharger"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@+id/imgBattery"
+        app:layout_constraintEnd_toStartOf="@+id/imgBattery"
+        app:layout_constraintTop_toTopOf="@+id/imgBattery"
+        app:srcCompat="@drawable/charging_32x32"
+        tools:visibility="visible" />
+
+    <TextView
+        android:id="@+id/txtPlayer2Tens"
+        android:layout_width="52dp"
+        android:layout_height="72dp"
+        android:layout_marginTop="50dp"
+        android:background="@drawable/btn_border_sets"
+        android:clickable="true"
+        android:editable="true"
+        android:fontFamily="@font/e1234"
+        android:gravity="center"
+        android:text="-"
+        android:textColor="#5DFF63"
+        android:textSize="60dp"
+        app:layout_constraintStart_toStartOf="@+id/txtPlayer1Tens"
+        app:layout_constraintTop_toBottomOf="@+id/txtPlayer1Tens"
+        tools:ignore="TextContrastCheck,DuplicateSpeakableTextCheck" />
+
+    <TextView
+        android:id="@+id/txtPlayer2Units"
+        android:layout_width="52dp"
+        android:layout_height="72dp"
+        android:background="@drawable/btn_border_sets"
+        android:clickable="true"
+        android:editable="true"
+        android:fontFamily="@font/e1234"
+        android:gravity="center"
+        android:text="-"
+        android:textColor="#5DFF63"
+        android:textSize="60dp"
+        app:layout_constraintStart_toEndOf="@+id/txtPlayer1Tens"
+        app:layout_constraintTop_toTopOf="@+id/txtPlayer2Tens" />
+
+    <TextView
+        android:id="@+id/txtPlayer1Units"
+        android:layout_width="52dp"
+        android:layout_height="72dp"
+        android:background="@drawable/btn_border_sets"
+        android:clickable="true"
+        android:editable="true"
+        android:fontFamily="@font/e1234"
+        android:gravity="center"
+        android:text="_"
+        android:textColor="#5DFF63"
+        android:textSize="60dp"
+        app:layout_constraintStart_toEndOf="@+id/txtPlayer1Tens"
+        app:layout_constraintTop_toTopOf="@+id/txtPlayer1Tens"
+        tools:ignore="TextContrastCheck,DuplicateSpeakableTextCheck" />
+
+    <TextView
+        android:id="@+id/txtPlayer1Tens"
+        android:layout_width="52dp"
+        android:layout_height="72dp"
+        android:layout_marginStart="2dp"
+        android:layout_marginLeft="2dp"
+        android:layout_marginTop="25dp"
+        android:background="@drawable/btn_border_sets"
+        android:clickable="true"
+        android:editable="true"
+        android:fontFamily="@font/e1234"
+        android:gravity="center|center_vertical"
+        android:text="_"
+        android:textColor="#5DFF63"
+        android:textSize="60dp"
+        app:layout_constraintStart_toStartOf="@+id/txtTimerDigits"
+        app:layout_constraintTop_toBottomOf="@+id/txtTimerDigits"
+        tools:ignore="TextContrastCheck" />
+
+    <ImageButton
+        android:id="@+id/btn_config"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginStart="20dp"
+        android:background="@drawable/btn_border_off"
+        app:layout_constraintBottom_toBottomOf="@+id/btStartTimer"
+        app:layout_constraintStart_toEndOf="@+id/btStartTimer"
+        app:layout_constraintTop_toTopOf="@+id/btStartTimer"
+        app:srcCompat="@android:drawable/ic_menu_manage"
+        tools:ignore="SpeakableTextPresentCheck"
+        tools:srcCompat="@android:drawable/ic_menu_manage" />
+
+    <Button
+        android:id="@+id/btNew"
+        android:layout_width="80dp"
+        android:layout_height="64dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginEnd="20dp"
+        android:background="@drawable/btn_border_new"
+        android:text="NEW"
+        android:textAlignment="center"
+        android:textColor="#FDFCFC"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toStartOf="@+id/txtTimerDigits"
+        app:layout_constraintTop_toTopOf="@+id/txtTimerDigits" />
 
     <EditText
         android:id="@+id/txtPlayer1Name"
-        android:layout_width="108dp"
-        android:layout_height="47dp"
-        android:layout_marginBottom="6dp"
+        android:layout_width="107dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginLeft="15dp"
         android:ems="10"
+        android:gravity="center|center_vertical"
         android:inputType="textPersonName"
         android:maxLength="8"
-        android:text=" Name 1"
-        android:textColor="#FBFBFB"
-        android:textSize="24sp"
+        android:text="NAME 1"
+        android:textColor="@android:color/holo_orange_dark"
+        android:textSize="14sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/txtPlayer1"
-        app:layout_constraintStart_toStartOf="@+id/txtPlayer1" />
-
-    <TextView
-        android:id="@+id/txtPlayer1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="64dp"
-        android:layout_marginRight="64dp"
-        android:clickable="false"
-        android:fontFamily="sans-serif-black"
-        android:text="PLAYER 1"
-        android:textColor="#FFFFFF"
-        android:textSize="24sp"
-        app:layout_constraintBottom_toBottomOf="@+id/txtPlayer1Games"
-        app:layout_constraintEnd_toStartOf="@+id/txtPlayer1Games" />
-
-    <TextView
-        android:id="@+id/txtPlayer1Games"
-        android:layout_width="96dp"
-        android:layout_height="64dp"
-        android:layout_marginStart="204dp"
-        android:layout_marginTop="148dp"
-        android:clickable="false"
-        android:fontFamily="@font/e1234"
-        android:text="00"
-        android:textColor="#5DFF63"
-        android:textSize="60dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/imgPlayer1"
+        tools:ignore="TouchTargetSizeCheck" />
 
     <TextView
         android:id="@+id/txtPlayer1Set1"
-        android:layout_width="48dp"
-        android:layout_height="64dp"
-        android:layout_marginStart="90dp"
-        android:layout_marginLeft="90dp"
-        android:clickable="false"
+        android:layout_width="52dp"
+        android:layout_height="72dp"
+        android:background="@drawable/btn_border_sets"
+        android:clickable="true"
+        android:editable="true"
         android:fontFamily="@font/e1234"
-        android:text="0"
+        android:gravity="center"
+        android:text="_"
         android:textColor="#5DFF63"
         android:textSize="60dp"
-        app:layout_constraintStart_toEndOf="@+id/txtPlayer1Games"
-        app:layout_constraintTop_toTopOf="@+id/txtPlayer1Games" />
+        app:layout_constraintEnd_toEndOf="@+id/txtTimerDigits"
+        app:layout_constraintTop_toTopOf="@+id/txtPlayer1Tens"
+        tools:ignore="TextContrastCheck" />
 
     <TextView
         android:id="@+id/txtPlayer1Set2"
-        android:layout_width="48dp"
-        android:layout_height="64dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginLeft="32dp"
-        android:clickable="false"
+        android:layout_width="52dp"
+        android:layout_height="72dp"
+        android:layout_marginStart="28dp"
+        android:layout_marginLeft="28dp"
+        android:background="@drawable/btn_border_sets"
+        android:clickable="true"
+        android:editable="true"
+        android:enabled="true"
         android:fontFamily="@font/e1234"
-        android:text="0"
+        android:gravity="center"
+        android:text="_"
         android:textColor="#5DFF63"
         android:textSize="60dp"
         app:layout_constraintStart_toEndOf="@+id/txtPlayer1Set1"
-        app:layout_constraintTop_toTopOf="@+id/txtPlayer1Set1" />
+        app:layout_constraintTop_toTopOf="@+id/txtPlayer1Set1"
+        tools:ignore="TextContrastCheck" />
 
     <TextView
         android:id="@+id/txtPlayer1Set3"
-        android:layout_width="48dp"
-        android:layout_height="64dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginLeft="32dp"
+        android:layout_width="52dp"
+        android:layout_height="72dp"
+        android:layout_marginStart="28dp"
+        android:layout_marginLeft="28dp"
+        android:background="@drawable/btn_border_sets"
         android:clickable="false"
         android:fontFamily="@font/e1234"
-        android:text="0"
+        android:gravity="center"
+        android:text="_"
         android:textColor="#5DFF63"
         android:textSize="60dp"
         app:layout_constraintStart_toEndOf="@+id/txtPlayer1Set2"
-        app:layout_constraintTop_toTopOf="@+id/txtPlayer1Set2" />
+        app:layout_constraintTop_toTopOf="@+id/txtPlayer1Set2"
+        tools:ignore="TextContrastCheck" />
 
     <EditText
         android:id="@+id/txtPlayer2Name"
         android:layout_width="108dp"
-        android:layout_height="47dp"
-        android:layout_marginBottom="6dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="4dp"
+        android:layout_marginRight="4dp"
         android:ems="10"
+        android:gravity="center|center_vertical"
         android:inputType="textPersonName"
         android:maxLength="8"
-        android:text=" Name 2"
-        android:textColor="#FBFBFB"
-        android:textSize="24sp"
+        android:text="NAME 2"
+        android:textColor="@android:color/holo_orange_dark"
+        android:textSize="14sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/txtPlayer2"
-        app:layout_constraintStart_toStartOf="@+id/txtPlayer2" />
-
-    <TextView
-        android:id="@+id/txtPlayer2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-black"
-        android:text="PLAYER 2"
-        android:textColor="#FFFFFF"
-        android:textSize="24sp"
-        app:layout_constraintBottom_toBottomOf="@+id/txtPlayer2Games"
-        app:layout_constraintStart_toStartOf="@+id/txtPlayer1" />
-
-    <TextView
-        android:id="@+id/txtPlayer2Games"
-        android:layout_width="96dp"
-        android:layout_height="64dp"
-        android:layout_marginStart="204dp"
-        android:layout_marginTop="124dp"
-        android:clickable="false"
-        android:fontFamily="@font/e1234"
-        android:text="00"
-        android:textColor="#5DFF63"
-        android:textSize="60dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/txtPlayer1Games" />
+        app:layout_constraintEnd_toEndOf="@+id/txtPlayer1Name"
+        app:layout_constraintTop_toBottomOf="@+id/imgPlayer2"
+        tools:ignore="TouchTargetSizeCheck" />
 
     <TextView
         android:id="@+id/txtPlayer2Set1"
-        android:layout_width="48dp"
-        android:layout_height="64dp"
-        android:layout_marginStart="90dp"
+        android:layout_width="52dp"
+        android:layout_height="72dp"
+        android:background="@drawable/btn_border_sets"
         android:clickable="false"
         android:fontFamily="@font/e1234"
-        android:text="0"
+        android:gravity="center"
+        android:text="-"
         android:textColor="#5DFF63"
         android:textSize="60sp"
-        app:layout_constraintStart_toEndOf="@+id/txtPlayer2Games"
-        app:layout_constraintTop_toTopOf="@+id/txtPlayer2Games" />
+        app:layout_constraintStart_toStartOf="@+id/txtPlayer1Set1"
+        app:layout_constraintTop_toTopOf="@+id/txtPlayer2Units" />
 
     <TextView
         android:id="@+id/txtPlayer2Set2"
-        android:layout_width="48dp"
-        android:layout_height="64dp"
-        android:layout_marginStart="32dp"
+        android:layout_width="52dp"
+        android:layout_height="72dp"
+        android:background="@drawable/btn_border_sets"
         android:clickable="false"
         android:fontFamily="@font/e1234"
-        android:text="0"
+        android:gravity="center"
+        android:text="-"
         android:textColor="#5DFF63"
         android:textSize="60sp"
-        app:layout_constraintStart_toEndOf="@+id/txtPlayer2Set1"
-        app:layout_constraintTop_toTopOf="@+id/txtPlayer2Set1" />
+        app:layout_constraintStart_toStartOf="@+id/txtPlayer1Set2"
+        app:layout_constraintTop_toTopOf="@+id/txtPlayer2Set1"
+        tools:ignore="TextContrastCheck" />
 
     <TextView
         android:id="@+id/txtPlayer2Set3"
-        android:layout_width="48dp"
-        android:layout_height="64dp"
-        android:layout_marginStart="32dp"
+        android:layout_width="52dp"
+        android:layout_height="72dp"
+        android:background="@drawable/btn_border_sets"
         android:clickable="false"
         android:fontFamily="@font/e1234"
-        android:text="0"
+        android:gravity="center"
+        android:text="-"
         android:textColor="#5DFF63"
         android:textSize="60sp"
-        app:layout_constraintStart_toEndOf="@+id/txtPlayer2Set2"
+        app:layout_constraintStart_toStartOf="@+id/txtPlayer1Set3"
         app:layout_constraintTop_toTopOf="@+id/txtPlayer2Set2" />
 
     <TextView
         android:id="@+id/txtGame"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="76dp"
         android:fontFamily="sans-serif-black"
-        android:text="GAME"
+        android:text="POINTS"
         android:textColor="#FFFFFF"
         android:textSize="20sp"
-        app:layout_constraintStart_toStartOf="@+id/txtPlayer1Games"
-        app:layout_constraintTop_toTopOf="@+id/txtPlayer1Games" />
+        app:layout_constraintBottom_toTopOf="@+id/txtPlayer2Tens"
+        app:layout_constraintEnd_toEndOf="@+id/txtPlayer1Units"
+        app:layout_constraintStart_toStartOf="@+id/txtPlayer1Tens"
+        app:layout_constraintTop_toBottomOf="@+id/txtPlayer1Tens" />
 
     <TextView
         android:id="@+id/txtSet1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="110dp"
         android:fontFamily="sans-serif-black"
         android:text="SET1"
         android:textColor="#FFFFFF"
         android:textSize="20sp"
-        app:layout_constraintStart_toEndOf="@+id/txtGame"
+        app:layout_constraintEnd_toEndOf="@+id/txtPlayer1Set1"
+        app:layout_constraintStart_toStartOf="@+id/txtPlayer1Set1"
+        app:layout_constraintTop_toTopOf="@+id/txtGame" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="45dp"
+        android:layout_marginRight="45dp"
+        android:fontFamily="sans-serif-black"
+        android:text="SRV"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/txtGame"
+        app:layout_constraintEnd_toStartOf="@+id/txtGame"
         app:layout_constraintTop_toTopOf="@+id/txtGame" />
 
     <TextView
         android:id="@+id/txtSet2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="28dp"
         android:fontFamily="sans-serif-black"
         android:text="SET2"
         android:textColor="#FFFFFF"
         android:textSize="20sp"
-        app:layout_constraintStart_toEndOf="@+id/txtSet1"
+        app:layout_constraintEnd_toEndOf="@+id/txtPlayer1Set2"
+        app:layout_constraintStart_toStartOf="@+id/txtPlayer1Set2"
         app:layout_constraintTop_toTopOf="@+id/txtSet1" />
 
     <TextView
         android:id="@+id/txtSet3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="28dp"
         android:fontFamily="sans-serif-black"
         android:text="SET3"
         android:textColor="#FFFFFF"
         android:textSize="20sp"
-        app:layout_constraintStart_toEndOf="@+id/txtSet2"
+        app:layout_constraintEnd_toEndOf="@+id/txtPlayer1Set3"
+        app:layout_constraintStart_toStartOf="@+id/txtPlayer1Set3"
         app:layout_constraintTop_toTopOf="@+id/txtSet2" />
-
 
     <ImageButton
         android:id="@+id/btPlayer1Up"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:background="@color/black"
-        app:layout_constraintStart_toEndOf="@+id/txtPlayer1Games"
-        app:layout_constraintTop_toTopOf="@+id/txtPlayer1Games"
-        app:srcCompat="@drawable/ic_arrow_up_nilo" />
+        android:layout_marginStart="12dp"
+        android:layout_marginLeft="12dp"
+        android:background="@android:color/transparent"
+        app:layout_constraintStart_toEndOf="@+id/txtPlayer1Units"
+        app:layout_constraintTop_toTopOf="@+id/txtPlayer1Tens"
+        app:srcCompat="@drawable/arrow_up_48x32_off"
+        tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck,ImageContrastCheck" />
 
     <ImageButton
-        android:id="@+id/btPlayer2Down"
+        android:id="@+id/btPlayer1Down"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:background="@color/black"
-        app:layout_constraintBottom_toBottomOf="@+id/txtPlayer2Games"
-        app:layout_constraintStart_toEndOf="@+id/txtPlayer2Games"
-        app:srcCompat="@drawable/ic_arrow_down_nilo" />
+        android:background="@android:color/transparent"
+        app:layout_constraintBottom_toBottomOf="@+id/txtPlayer1Units"
+        app:layout_constraintStart_toStartOf="@+id/btPlayer1Up"
+        app:srcCompat="@drawable/arrow_down_48x32_off"
+        tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck,ImageContrastCheck" />
 
     <ImageButton
         android:id="@+id/btPlayer2Up"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:background="@color/black"
-        app:layout_constraintStart_toEndOf="@+id/txtPlayer2Games"
-        app:layout_constraintTop_toTopOf="@+id/txtPlayer2Games"
-        app:srcCompat="@drawable/ic_arrow_up_nilo" />
+        android:background="@android:color/transparent"
+        app:layout_constraintStart_toStartOf="@+id/btPlayer1Down"
+        app:layout_constraintTop_toTopOf="@+id/txtPlayer2Units"
+        app:srcCompat="@drawable/arrow_up_48x32_off"
+        tools:ignore="TouchTargetSizeCheck,SpeakableTextPresentCheck,ImageContrastCheck" />
 
     <ImageButton
-        android:id="@+id/btConfig"
+        android:id="@+id/btPlayer2Down"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="20dp"
-        android:background="@color/black"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@android:drawable/stat_sys_data_bluetooth" />
+        android:background="@android:color/transparent"
+        app:layout_constraintBottom_toBottomOf="@+id/txtPlayer2Units"
+        app:layout_constraintStart_toStartOf="@+id/btPlayer2Up"
+        app:srcCompat="@drawable/arrow_down_48x32_off"
+        tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck,ImageContrastCheck" />
+
+    <ImageButton
+        android:id="@+id/btn_connect"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginRight="20dp"
+        android:background="@drawable/btn_border_off"
+        app:layout_constraintBottom_toBottomOf="@+id/btNew"
+        app:layout_constraintEnd_toStartOf="@+id/btNew"
+        app:layout_constraintTop_toTopOf="@+id/btNew"
+        app:srcCompat="@android:drawable/stat_sys_data_bluetooth"
+        tools:ignore="SpeakableTextPresentCheck"
+        tools:srcCompat="@android:drawable/stat_sys_data_bluetooth" />
 
     <TextView
         android:id="@+id/txtTimerDigits"
-        android:layout_width="240dp"
-        android:layout_height="64dp"
-        android:layout_marginTop="36dp"
-        android:clickable="false"
+        android:layout_width="250dp"
+        android:layout_height="72dp"
+        android:layout_marginStart="190dp"
+        android:layout_marginLeft="190dp"
+        android:layout_marginTop="28dp"
+        android:background="@drawable/btn_border_gametime"
+        android:clickable="true"
         android:fontFamily="@font/e1234"
-        android:text="00:00"
-        android:textColor="#5DFF63"
+        android:gravity="center"
+        android:text="__:__"
+        android:textColor="#056A05"
         android:textSize="60dp"
-        app:layout_constraintStart_toStartOf="@+id/txtPlayer1Games"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="TextContrastCheck" />
 
     <Button
         android:id="@+id/btStartTimer"
         android:layout_width="80dp"
-        android:layout_height="60dp"
+        android:layout_height="64dp"
         android:layout_marginStart="20dp"
         android:layout_marginTop="2dp"
-        android:background="#75676767"
+        android:background="@drawable/btn_border_start"
         android:text="START"
         android:textColor="#FDFCFC"
-        app:backgroundTint="#3C3B3B"
+        android:textSize="18sp"
         app:layout_constraintStart_toEndOf="@+id/txtTimerDigits"
         app:layout_constraintTop_toTopOf="@+id/txtTimerDigits" />
 
@@ -329,11 +428,40 @@
         android:id="@+id/imgPlayer1ServArrow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:layout_marginEnd="6dp"
-        app:layout_constraintEnd_toStartOf="@+id/txtPlayer1Games"
-        app:layout_constraintTop_toTopOf="@+id/txtPlayer1Games"
-        app:srcCompat="@drawable/ic_arrow_right_nilo" />
+        android:layout_marginEnd="30dp"
+        android:layout_marginRight="30dp"
+        android:background="@drawable/btn_border_sets"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@+id/txtPlayer1Tens"
+        app:layout_constraintEnd_toStartOf="@+id/txtPlayer1Tens"
+        app:layout_constraintTop_toTopOf="@+id/txtPlayer1Tens"
+        app:srcCompat="@drawable/arrow_green" />
+
+    <ImageView
+        android:id="@+id/imgPlayer2ServArrow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/btn_border_sets"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@+id/txtPlayer2Tens"
+        app:layout_constraintEnd_toEndOf="@+id/imgPlayer1ServArrow"
+        app:layout_constraintTop_toTopOf="@+id/txtPlayer2Tens"
+        app:srcCompat="@drawable/arrow_green" />
+
+    <TextView
+        android:id="@+id/txtInMessage"
+        android:layout_width="368dp"
+        android:layout_height="33dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginRight="5dp"
+        android:background="#090909"
+        android:gravity="right|center_vertical"
+        android:textColor="@android:color/darker_gray"
+        android:textSize="14sp"
+        android:visibility="visible"
+        app:layout_constraintEnd_toStartOf="@+id/imgCharger"
+        app:layout_constraintStart_toStartOf="@+id/imgPlayer2ServArrow"
+        app:layout_constraintTop_toTopOf="@+id/imgCharger" />
 
 
 </android.support.constraint.ConstraintLayout>
