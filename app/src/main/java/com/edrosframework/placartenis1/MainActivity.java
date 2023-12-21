@@ -98,6 +98,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button btStartTimer;
     private ImageButton btConfig;
 
+    private TextView txtMode;
+    private TextView txtInMessage;
     private TextView txtTimerDigits;
     private ImageView imgCharger;
     private ImageView imgBattery;
@@ -143,7 +145,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     boolean connected = false;
 
     ConnectedThread myConnection;
-    private TextView txtInMessage;
     private com.edrosframework.placartenis1.Packetizer InPacket = null;
     //private final NConverter Converter = new NConverter();
 
@@ -597,7 +598,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         txtInMessage = findViewById(R.id.txtInMessage);
         txtInMessage.setVisibility(View.INVISIBLE);
 
-
         imgCharger = findViewById(R.id.imgCharger);
         imgBattery = findViewById(R.id.imgBattery);
         imgBattery.setOnClickListener(new View.OnClickListener() {
@@ -650,6 +650,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // Get the shared preferences instance
         SharedPreferences appSettings = getSharedPreferences("PLT-01", Context.MODE_PRIVATE);
         // Retrieve the app settings
+        Match.setMode(appSettings.getInt("Mode", 1));
         Match.setGamesPerSet(appSettings.getInt("GamesPerSet", 6));
         Match.setPointsPerGame(appSettings.getInt("PointsPerGame", 7));
         Match.setSetsPerMatch(appSettings.getInt("SetsPerMatch", 3));
@@ -829,7 +830,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         //-------------------------------------------------------------
-        txtInMessage = findViewById(R.id.txtInMessage);
+        txtMode = findViewById(R.id.txt_mode);
+        txtMode.setText(Match.Rules.ToString());
+        txtMode.setVisibility(View.VISIBLE);
 
         //-------------------------------------------------------------
         // Bluetooth serial data auxiliary objects
@@ -1039,6 +1042,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         if(Match.CheckMatch() != Match.PLAYER_ID_NONE){
                             GameOver.startTimer(500);
                         }
+
+                        txtMode.setText(Match.Rules.ToString());
                     }
                 }
                 break;

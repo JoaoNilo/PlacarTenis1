@@ -92,7 +92,14 @@ public class Scoreboard implements Serializable {
     ScoreParameters Rules;
 
     //----------------------------------------------------------------------------------------------
-    public void SetMode(){}
+    public void setMode(int new_mode){
+        Rules.setMode(new_mode);
+    }
+
+    //----------------------------------------------------------------------------------------------
+    public int getMode(){
+        return(Rules.GetMode());
+    }
 
     //----------------------------------------------------------------------------------------------
     private transient MyEventListener eventListener;

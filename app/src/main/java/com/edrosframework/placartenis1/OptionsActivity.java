@@ -2,7 +2,9 @@
 package com.edrosframework.placartenis1;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -24,6 +26,7 @@ public class OptionsActivity extends AppCompatActivity {
     Button btTweaks;
     EditText MessageBoard;
     ScoreParameters TmpRules;
+    boolean mode_changed;
 
     //----------------------------------------------------------------------------------------------
     @Override
@@ -37,6 +40,7 @@ public class OptionsActivity extends AppCompatActivity {
         MatchConfig = (Scoreboard) intent.getSerializableExtra("Match");
         TmpRules = new ScoreParameters();
         TmpRules.SetMode(MatchConfig.Rules.GetMode());
+        mode_changed = false;
 
         MessageBoard = findViewById(R.id.em_message);
 
@@ -51,6 +55,26 @@ public class OptionsActivity extends AppCompatActivity {
         // return to previous activity
         Button btOK = findViewById(R.id.bt_ok);
         btOK.setOnClickListener(view -> {
+            //--------------------------------------------------------------
+            // check if mode has changed
+            if(mode_changed) {
+                // Get the shared preferences instance
+                SharedPreferences sharedPreferences = getSharedPreferences("PLT-01", Context.MODE_PRIVATE);
+                SharedPreferences.Editor settings = sharedPreferences.edit();
+                // Save the app settings
+                settings.putInt("Mode", MatchConfig.getMode());
+                settings.putInt("GamesPerSet", MatchConfig.getGamesPerSet());
+                settings.putInt("PointsPerGame", MatchConfig.getPointsPerGame());
+                settings.putInt("SetsPerMatch", MatchConfig.getSetsPerMatch());
+                settings.putInt("PointsMatchTie", MatchConfig.getMatchTiebreakPoints());
+                settings.putBoolean("Advantage", MatchConfig.isAdvantage());
+                settings.putBoolean("Tiebreak", MatchConfig.isTiebreak());
+                settings.putBoolean("TennisMode", MatchConfig.isMatchTiebreak());
+                settings.putBoolean("AlternateService", MatchConfig.isAlternateService());
+                // Commit the changes
+                settings.apply();
+            }
+
             // calls the "ConfigActivity" passing score data in "Match" object
             Intent i = new Intent(getApplicationContext(), GameSettings.class);
             i.putExtra("MatchConfig", MatchConfig);
@@ -73,50 +97,65 @@ public class OptionsActivity extends AppCompatActivity {
         // selects one of the options
         btTennis = findViewById(R.id.bt_tennis);
         btTennis.setOnClickListener(view -> {
-            // selected option: Tennis
-            TmpRules.SetMode(ScoreParameters.MODE_ID_TENNIS);
-            MessageBoard.setText( TmpRules.ModeDescription());
-            HighlightOption(TmpRules.GetMode());
+            if(TmpRules.GetMode() != ScoreParameters.MODE_ID_TENNIS) {
+                // selected option: Tennis
+                TmpRules.SetMode(ScoreParameters.MODE_ID_TENNIS);
+                MessageBoard.setText(TmpRules.ModeDescription());
+                HighlightOption(TmpRules.GetMode());
+                mode_changed = true;
+            }
         });
 
         //-------------------------------------------------------------
         // selects one of the options
         btBeachTennis = findViewById(R.id.bt_beachtennis);
         btBeachTennis.setOnClickListener(view -> {
-            // selected option: Tennis
-            TmpRules.SetMode(ScoreParameters.MODE_ID_BEACHTENNIS);
-            MessageBoard.setText( TmpRules.ModeDescription());
-            HighlightOption(TmpRules.GetMode());
+            if(TmpRules.GetMode() != ScoreParameters.MODE_ID_TENNIS) {
+                // selected option: Tennis
+                TmpRules.SetMode(ScoreParameters.MODE_ID_BEACHTENNIS);
+                MessageBoard.setText(TmpRules.ModeDescription());
+                HighlightOption(TmpRules.GetMode());
+                mode_changed = true;
+            }
         });
 
         //-------------------------------------------------------------
         // selects one of the options
         btTableTennis = findViewById(R.id.bt_tabletennis);
         btTableTennis.setOnClickListener(view -> {
-            // selected option: Tennis
-            TmpRules.SetMode(ScoreParameters.MODE_ID_TABLETENNIS);
-            MessageBoard.setText( TmpRules.ModeDescription());
-            HighlightOption(TmpRules.GetMode());
+            if(TmpRules.GetMode() != ScoreParameters.MODE_ID_TABLETENNIS) {
+                // selected option: Tennis
+                TmpRules.SetMode(ScoreParameters.MODE_ID_TABLETENNIS);
+                MessageBoard.setText(TmpRules.ModeDescription());
+                HighlightOption(TmpRules.GetMode());
+                mode_changed = true;
+            }
         });
 
         //-------------------------------------------------------------
         // selects one of the options
         btBeachVolley = findViewById(R.id.bt_beachvolleyball);
         btBeachVolley.setOnClickListener(view -> {
-            // selected option: Tennis
-            TmpRules.SetMode(ScoreParameters.MODE_ID_BEACHVOLLEY);
-            MessageBoard.setText( TmpRules.ModeDescription());
-            HighlightOption(TmpRules.GetMode());
+            if(TmpRules.GetMode() != ScoreParameters.MODE_ID_BEACHVOLLEY) {
+                // selected option: Tennis
+                TmpRules.SetMode(ScoreParameters.MODE_ID_BEACHVOLLEY);
+                MessageBoard.setText(TmpRules.ModeDescription());
+                HighlightOption(TmpRules.GetMode());
+                mode_changed = true;
+            }
         });
 
         //-------------------------------------------------------------
         // selects one of the options
         btFootvolley = findViewById(R.id.bt_footvolley);
         btFootvolley.setOnClickListener(view -> {
-            // selected option: Tennis
-            TmpRules.SetMode(ScoreParameters.MODE_ID_FOOTVOLLEY);
-            MessageBoard.setText( TmpRules.ModeDescription());
-            HighlightOption(TmpRules.GetMode());
+            if(TmpRules.GetMode() != ScoreParameters.MODE_ID_FOOTVOLLEY) {
+                // selected option: Tennis
+                TmpRules.SetMode(ScoreParameters.MODE_ID_FOOTVOLLEY);
+                MessageBoard.setText(TmpRules.ModeDescription());
+                HighlightOption(TmpRules.GetMode());
+                mode_changed = true;
+            }
         });
     }
 

@@ -31,6 +31,12 @@ public class ScoreParameters implements Serializable {
     }
 
     //--------------------------------------------------------------------------
+    // usado para recarregar parâmetros "não voláteis"
+    public void setMode(int new_mode) {
+        mode = new_mode;
+    }
+
+    //--------------------------------------------------------------------------
     public void SetMode(int new_mode) {
         switch (new_mode) {
             case MODE_ID_TENNIS:
@@ -98,6 +104,11 @@ public class ScoreParameters implements Serializable {
     //--------------------------------------------------------------------------
     public int GetMode(){
         return mode;
+    }
+
+    //--------------------------------------------------------------------------
+    public String ToString() {
+        return(ToString(mode));
     }
 
     //--------------------------------------------------------------------------
