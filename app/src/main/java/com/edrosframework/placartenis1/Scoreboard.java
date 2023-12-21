@@ -10,7 +10,6 @@ import java.util.Locale;
 //--------------------------------------------------------------------------------------------------
 public class Scoreboard implements Serializable {
 
-
     //----------------------------------------------------------------------------------------------
     public final int PLAYER_ID_NONE = 0;
     public final int PLAYER_ID_1 = 1;
