@@ -1,14 +1,16 @@
 //==============================================================================
 package com.edrosframework.placartenis1;
 
-public class ScoreParameters{
+import java.io.Serializable;
+
+public class ScoreParameters implements Serializable {
 
     //--------------------------------------------------------------------------
-    public final int MODE_ID_TENNIS         = 1;
-    public final int MODE_ID_BEACHTENNIS    = 2;
-    public final int MODE_ID_TABLETENNIS    = 3;
-    public final int MODE_ID_BEACHVOLLEY    = 4;
-    public final int MODE_ID_FOOTVOLLEY     = 5;
+    public static final int MODE_ID_TENNIS         = 1;
+    public static final int MODE_ID_BEACHTENNIS    = 2;
+    public static final int MODE_ID_TABLETENNIS    = 3;
+    public static final int MODE_ID_BEACHVOLLEY    = 4;
+    public static final int MODE_ID_FOOTVOLLEY     = 5;
 
     //--------------------------------------------------------------------------
     public boolean advantage;
@@ -99,16 +101,36 @@ public class ScoreParameters{
     }
 
     //--------------------------------------------------------------------------
-    public String ToString(){
+    public String ToString(int tmode){
         String result = "Not Initialized.";
-        switch (mode){
+        switch (tmode){
             case MODE_ID_TENNIS: result = "Tennis"; break;
             case MODE_ID_BEACHTENNIS: result = "Beach Tennis"; break;
             case MODE_ID_TABLETENNIS: result = "Table Tennis"; break;
-            case MODE_ID_BEACHVOLLEY: result = "Beach Volleyball"; break;
+            case MODE_ID_BEACHVOLLEY: result = "Beach Volley"; break;
             case MODE_ID_FOOTVOLLEY: result = "Footvolley"; break;
         }
         return result;
     }
+
+    //--------------------------------------------------------------------------
+    public String ModeDescription(){
+        String result = "     >>> SCORING RULES <<<\n\n";
+        result += "Mode: ............. " + ToString(mode) + "\n";
+        result += "Advantage: ........ " + (advantage?"yes":"no") + "\n";
+        result += "Tiebreak: ......... " + (tiebreak?"yes":"no") + "\n";
+        if(mode == MODE_ID_BEACHTENNIS) {
+            result += "Match Tiebreak: ... " + (match_tiebreak ? "yes" : "no") + "\n";
+        }
+        result += "Alternate Service:  " + (alternate_service?"yes":"no") + "\n";
+        result += "Tiebreak Count: ... " + String.valueOf(points_Tiebreak) + "\n";
+        result += "Games/Set: ........ " + String.valueOf(games_per_set) + "\n";
+        result += "Sets/Match: ....... " + String.valueOf(sets_per_match) + "\n";
+        if(mode == MODE_ID_BEACHTENNIS) {
+            result += "Match Tiebreak: ... " + String.valueOf(points_matchTiebreak) + "\n";
+        }
+        return result;
+    }
+
 }
 //==============================================================================

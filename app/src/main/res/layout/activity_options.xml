@@ -33,7 +33,7 @@
         android:layout_width="194dp"
         android:layout_height="58dp"
         android:layout_marginTop="10dp"
-        android:text="Beach Volleyball"
+        android:text="Beach Volley"
         app:layout_constraintStart_toStartOf="@+id/bt_tennis"
         app:layout_constraintTop_toBottomOf="@+id/bt_tabletennis" />
 
@@ -57,18 +57,21 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
-        android:id="@+id/editTextTextMultiLine"
-        android:layout_width="291dp"
-        android:layout_height="247dp"
-        android:layout_marginStart="85dp"
+        android:id="@+id/em_message"
+        android:layout_width="332dp"
+        android:layout_height="242dp"
+        android:layout_marginStart="82dp"
         android:clickable="false"
         android:editable="false"
         android:ems="10"
         android:focusable="false"
+        android:fontFamily="monospace"
         android:gravity="start|top"
         android:inputType="textMultiLine"
+        android:lineSpacingExtra="4sp"
         android:text="Please select one of the options listed aside and click 'Ok' to confirm selection or 'Cancel' to return."
         android:textColor="@color/white"
+        android:textSize="14sp"
         app:layout_constraintStart_toEndOf="@+id/bt_tennis"
         app:layout_constraintTop_toTopOf="@+id/bt_tennis" />
 
@@ -78,8 +81,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
         android:text="Cancel"
-        app:layout_constraintStart_toStartOf="@+id/editTextTextMultiLine"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextMultiLine" />
+        app:layout_constraintStart_toStartOf="@+id/em_message"
+        app:layout_constraintTop_toBottomOf="@+id/em_message" />
 
     <Button
         android:id="@+id/bt_ok"

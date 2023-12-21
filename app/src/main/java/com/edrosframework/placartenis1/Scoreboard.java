@@ -10,11 +10,6 @@ import java.util.Locale;
 //--------------------------------------------------------------------------------------------------
 public class Scoreboard implements Serializable {
 
-    //----------------------------------------------------------------------------------------------
-    public final int MODE_ID_TENNIS     = 1;
-    public final int MODE_ID_BEACH      = 2;
-    public final int MODE_ID_VOLEY      = 3;
-    public final int MODE_ID_FUTVOLEY   = 4;
 
     //----------------------------------------------------------------------------------------------
     public final int PLAYER_ID_NONE = 0;
@@ -69,24 +64,41 @@ public class Scoreboard implements Serializable {
     private boolean change_server = false;
     private boolean tiebreaking = false;
     private int points_to_win = 7;
+    private int winner = 0;
 
     //----------------------------------------------------------------------------------------------
     // config params
-    private int mode = 0;
+    // mode 1 = tennis {
+    //    advantage = true
+    //    tiebreak = true
+    //    match_tiebreak = false
+    //    alternate_service = true
+    //    points_Tiebreak = 7
+    //    games_per_set = 6
+    //    sets_per_match = 3
+    //    points_matchTiebreak = 10
+    // }
+    //----------------------------------------------------------------------------------------------
+    /*private int mode = 0;
     private boolean advantage = true;
     private boolean tiebreak = true;
     private boolean match_tiebreak = true;
     private boolean alternate_service = true;
-    private int winner = 0;
 
-    private int points_matchTiebreak = 10;      // beach tennis "match tiebreak"
-    private int points_per_game = 7;
+    private int points_Tiebreak = 7;
     private int games_per_set = 6;
     private int sets_per_match = 3;
+    private int points_matchTiebreak = 10;      // 'Pro beach tennis' "match tiebreak"
+    */
+    ScoreParameters Rules;
+
+    //----------------------------------------------------------------------------------------------
+    public void SetMode(){}
 
     //----------------------------------------------------------------------------------------------
     private transient MyEventListener eventListener;
 
+    //----------------------------------------------------------------------------------------------
     public void setEventListener(MyEventListener eventListener) {
         this.eventListener = eventListener;
     }
@@ -102,29 +114,29 @@ public class Scoreboard implements Serializable {
     public byte CheckSet(int set_id) {
         byte result = 0; this.tiebreaking = false;
         // tiebreak game victory
-        if(player1_set[set_id] > games_per_set){
-            result = PLAYER_ID_1; player2_set[set_id] = (byte)games_per_set;
-        } else if(player2_set[set_id] > games_per_set){
-            result = PLAYER_ID_2; player1_set[set_id] = (byte)games_per_set;
+        if(player1_set[set_id] > Rules.games_per_set){
+            result = PLAYER_ID_1; player2_set[set_id] = (byte)Rules.games_per_set;
+        } else if(player2_set[set_id] > Rules.games_per_set){
+            result = PLAYER_ID_2; player1_set[set_id] = (byte)Rules.games_per_set;
         }
 
         // simple game victory
-        if((player1_set[set_id] == games_per_set) && ((player1_set[set_id]-player2_set[set_id])>1)){
+        if((player1_set[set_id] == Rules.games_per_set) && ((player1_set[set_id]-player2_set[set_id])>1)){
             result = PLAYER_ID_1;
-        } else if((player2_set[set_id] == games_per_set) && ((player2_set[set_id]-player1_set[set_id])>1)){
+        } else if((player2_set[set_id] == Rules.games_per_set) && ((player2_set[set_id]-player1_set[set_id])>1)){
             result = PLAYER_ID_2;
         }
 
         // check for tiebreaks (both modes)
-        if((player1_set[set_id] == this.games_per_set) && (player2_set[set_id] == this.games_per_set)){
+        if((player1_set[set_id] == Rules.games_per_set) && (player2_set[set_id] == Rules.games_per_set)){
             this.tiebreaking = true;
         }
 
         // "special case" game victory (prepare for match tiebreak)
         if(set_id == SET_INDEX_3){
-            if(this.match_tiebreak){
+            if(Rules.match_tiebreak){
                 this.tiebreaking = true;
-                this.points_to_win = this.points_matchTiebreak;
+                this.points_to_win = Rules.points_matchTiebreak;
                 if(player1_set[set_id] == 1) { result = PLAYER_ID_1;}
                 else if(player2_set[set_id] == 1) { result = PLAYER_ID_2;}
             }
@@ -138,12 +150,12 @@ public class Scoreboard implements Serializable {
         byte result = PLAYER_ID_NONE;
         player1_sets = 0; player2_sets = 0;
         // compute won sets for both players
-        for (byte c=0; c < sets_per_match; c++){
+        for (byte c=0; c < Rules.sets_per_match; c++){
             if(CheckSet(c) == PLAYER_ID_1){ player1_sets++;}
             else if(CheckSet(c) == PLAYER_ID_2){ player2_sets++;}
         }
         // check for a winner
-        int winner = (sets_per_match / 2) + 1;
+        int winner = (Rules.sets_per_match / 2) + 1;
         if(player1_sets >= winner){ result = PLAYER_ID_1;}
         else if(player2_sets >= winner){ result = PLAYER_ID_2;}
         return(result);
@@ -174,72 +186,72 @@ public class Scoreboard implements Serializable {
     public boolean isTiebreaking() { return this.tiebreaking;}
 
     //----------------------------------------------------------------------------------------------
-    public boolean isTiebreak() { return this.tiebreak;}
+    public boolean isTiebreak() { return Rules.tiebreak;}
 
     //----------------------------------------------------------------------------------------------
-    public void setTiebreak(boolean tiebreak) { this.tiebreak = tiebreak;}
+    public void setTiebreak(boolean tiebreak) { Rules.tiebreak = tiebreak;}
 
     //----------------------------------------------------------------------------------------------
-    public boolean isAdvantage() { return this.advantage;}
+    public boolean isAdvantage() { return Rules.advantage;}
 
     //----------------------------------------------------------------------------------------------
-    public void setAdvantage(boolean advantage) { this.advantage = advantage;}
+    public void setAdvantage(boolean advantage) { Rules.advantage = advantage;}
 
     //----------------------------------------------------------------------------------------------
-    public boolean isMatchTiebreak() { return this.match_tiebreak;}
+    public boolean isMatchTiebreak() { return Rules.match_tiebreak;}
 
     //----------------------------------------------------------------------------------------------
-    public void setMatchTiebreak(boolean tennis_mode) { this.match_tiebreak = tennis_mode;}
+    public void setMatchTiebreak(boolean tennis_mode) { Rules.match_tiebreak = tennis_mode;}
 
     //----------------------------------------------------------------------------------------------
     public void setMatchTiebreakPoints(int points) {
         if(points > 80){ points = 80;}
-        this.points_matchTiebreak = points;
+        Rules.points_matchTiebreak = points;
     }
 
     //----------------------------------------------------------------------------------------------
     public int getMatchTiebreakPoints() {
-        return this.points_matchTiebreak;
+        return Rules.points_matchTiebreak;
     }
 
     //----------------------------------------------------------------------------------------------
-    public boolean isAlternateService() { return this.alternate_service;}
+    public boolean isAlternateService() { return Rules.alternate_service;}
 
     //----------------------------------------------------------------------------------------------
-    public void setAlternateService(boolean alternate_service) { this.alternate_service = alternate_service;}
+    public void setAlternateService(boolean alternate_service) { Rules.alternate_service = alternate_service;}
 
     //----------------------------------------------------------------------------------------------
-    public int getGamesPerSet() { return this.games_per_set;}
+    public int getGamesPerSet() { return Rules.games_per_set;}
 
     //----------------------------------------------------------------------------------------------
     public void setGamesPerSet(int games_set) {
-        if(games_set < 1){ this.games_per_set = 1;}
-        else if(games_set > 8){ this.games_per_set = 8;}
-        else{ this.games_per_set = games_set;}
+        if(games_set < 1){ Rules.games_per_set = 1;}
+        else if(games_set > 8){ Rules.games_per_set = 8;}
+        else{ Rules.games_per_set = games_set;}
     }
 
     //----------------------------------------------------------------------------------------------
     public int getPointsPerGame() {
-        return this.points_per_game;
+        return Rules.points_Tiebreak;
     }
 
     //----------------------------------------------------------------------------------------------
     public void setPointsPerGame(int new_points_per_game) {
-        if(new_points_per_game < 2){ this.points_per_game = 2;}
-        else if(new_points_per_game > 98){ this.points_per_game = 98;}
-        else{ this.points_per_game = new_points_per_game;}
+        if(new_points_per_game < 2){ Rules.points_Tiebreak = 2;}
+        else if(new_points_per_game > 98){ Rules.points_Tiebreak = 98;}
+        else{ Rules.points_Tiebreak = new_points_per_game;}
     }
 
     //----------------------------------------------------------------------------------------------
     public int getSetsPerMatch() {
-        return this.sets_per_match;
+        return Rules.sets_per_match;
     }
 
     //----------------------------------------------------------------------------------------------
     public void setSetsPerMatch(int sets_per_match) {
-        if(sets_per_match < 1){ this.sets_per_match = 1;}
-        else if(sets_per_match > 3){ this.sets_per_match = 3;}
-        else{ this.sets_per_match = sets_per_match;}
+        if(sets_per_match < 1){ Rules.sets_per_match = 1;}
+        else if(sets_per_match > 3){ Rules.sets_per_match = 3;}
+        else{ Rules.sets_per_match = sets_per_match;}
     }
 
     //----------------------------------------------------------------------------------------------
@@ -253,6 +265,7 @@ public class Scoreboard implements Serializable {
 
     //----------------------------------------------------------------------------------------------
     public Scoreboard() {
+        Rules = new ScoreParameters();
         Restart();
     }
 
@@ -292,8 +305,10 @@ public class Scoreboard implements Serializable {
         this.winner = 0;
         this.current_set = 0;
         this.current_server = 0;
-        this.points_to_win = this.points_per_game;
+        this.points_to_win = Rules.points_Tiebreak;
         this.tiebreaking = false;
+
+        Rules = new ScoreParameters();
     }
 
     //----------------------------------------------------------------------------------------------
@@ -322,35 +337,35 @@ public class Scoreboard implements Serializable {
     private void SetIncrement1(int n) {
         if (current_set == 1) {
             player1_set[SET_INDEX_1] += n;
-            if (player1_set[SET_INDEX_1] > games_per_set) {
+            if (player1_set[SET_INDEX_1] > Rules.games_per_set) {
                 // >>>> GANHOU O SET NO TIE-BREAK <<<<<
                 // vai para o próximo set
                 player1_sets++;
-                if(sets_per_match == 1){ winner = PLAYER_ID_1;}
+                if(Rules.sets_per_match == 1){ winner = PLAYER_ID_1;}
                 else { current_set = 2;}
-            } else if (player1_set[SET_INDEX_1] == games_per_set) {
+            } else if (player1_set[SET_INDEX_1] == Rules.games_per_set) {
                 if ((player1_set[SET_INDEX_1] - player2_set[SET_INDEX_1]) > 1) {
                     // >>>> GANHOU O SET POR 2 OU MAIS GAMES <<<<<
                     player1_sets++;
-                    if(sets_per_match == 1){ winner = PLAYER_ID_1;}
+                    if(Rules.sets_per_match == 1){ winner = PLAYER_ID_1;}
                     else { current_set = 2;}
                 } else if(player1_set[SET_INDEX_1] == player2_set[SET_INDEX_1]) { tiebreaking = true;}
             }
             if(current_set == 1){ CheckChangeSides((byte) SET_INDEX_1);}
         } else if (current_set == 2) {
             player1_set[SET_INDEX_2] += n;
-            if (player1_set[SET_INDEX_2] > games_per_set) {
+            if (player1_set[SET_INDEX_2] > Rules.games_per_set) {
                 // >>>> GANHOU O SET NO TIE-BREAK <<<<<
                 // vai para o próximo set
                 player1_sets++;
                 if(player1_sets >= 2){ winner = PLAYER_ID_1;}
                 else {
                     current_set = 3;
-                    if(this.match_tiebreak){
-                       this. tiebreak = true; tiebreaking = true; this.points_to_win = this.points_matchTiebreak;
+                    if(Rules.match_tiebreak){
+                        Rules.tiebreak = true; tiebreaking = true; this.points_to_win = Rules.points_matchTiebreak;
                     }
                 }
-            } else if (player1_set[SET_INDEX_2] == games_per_set) {
+            } else if (player1_set[SET_INDEX_2] == Rules.games_per_set) {
                 if ((player1_set[SET_INDEX_2] - player2_set[SET_INDEX_2]) > 1) {
                     // >>>> GANHOU O SET POR 2 OU MAIS GAMES <<<<<
                     player1_sets++;
@@ -360,16 +375,16 @@ public class Scoreboard implements Serializable {
             }
             if(current_set == 2){ CheckChangeSides((byte) SET_INDEX_2);}
         } else if (current_set == 3) {
-            if (!this.match_tiebreak) {
+            if (!Rules.match_tiebreak) {
                 player1_set[SET_INDEX_3] += n;
-                if (player1_set[SET_INDEX_3] > games_per_set) {
+                if (player1_set[SET_INDEX_3] > Rules.games_per_set) {
                     // >>>> GANHOU O JOGO TIE-BREAK <<<<<
                     // vai para o próximo JOGO
                     player1_sets++;
                     //winner = PLAYER_ID_1;
                     Stop(PLAYER_ID_1);
                     //current_set = 0;
-                } else if (player1_set[SET_INDEX_3] == games_per_set) {
+                } else if (player1_set[SET_INDEX_3] == Rules.games_per_set) {
                     if ((player1_set[SET_INDEX_3] - player2_set[SET_INDEX_3]) > 1) {
                         // >>>> GANHOU O SET POR 2 OU MAIS GAMES <<<<<
                         player1_sets++;
@@ -392,54 +407,54 @@ public class Scoreboard implements Serializable {
     private void SetIncrement2(int n) {
         if (current_set == 1) {
             player2_set[SET_INDEX_1] += n;
-            if (player2_set[SET_INDEX_1] > games_per_set) {
+            if (player2_set[SET_INDEX_1] > Rules.games_per_set) {
                 // >>>> GANHOU O SET NO TIE-BREAK <<<<<
                 // vai para o próximo set
                 player2_sets++;
-                if(sets_per_match == 1){ winner = PLAYER_ID_2;}
+                if(Rules.sets_per_match == 1){ winner = PLAYER_ID_2;}
                 else { current_set = 2;}
-            } else if (player2_set[SET_INDEX_1] == games_per_set) {
+            } else if (player2_set[SET_INDEX_1] == Rules.games_per_set) {
                 if ((player2_set[SET_INDEX_1] - player1_set[SET_INDEX_1]) > 1) {
                     // >>>> GANHOU O SET POR 2 OU MAIS GAMES <<<<<
                     player2_sets++;
-                    if(sets_per_match == 1){ winner = PLAYER_ID_2;}
+                    if(Rules.sets_per_match == 1){ winner = PLAYER_ID_2;}
                     else { current_set = 2;}
                 } else if(player1_set[SET_INDEX_1] == player2_set[SET_INDEX_1]) { tiebreaking = true;}
             }
             if(current_set == 1){ CheckChangeSides((byte) SET_INDEX_1);}
         } else if (current_set == 2) {
             player2_set[SET_INDEX_2] += n;
-            if (player2_set[SET_INDEX_2] > games_per_set) {
+            if (player2_set[SET_INDEX_2] > Rules.games_per_set) {
                 // >>>> GANHOU O SET NO TIE-BREAK <<<<<
                 // vai para o próximo set
                 player2_sets++;
                 if(player2_sets >= 2){ winner = PLAYER_ID_2;}
                 else { current_set = 3;}
-            } else if (player2_set[SET_INDEX_2] == games_per_set) {
+            } else if (player2_set[SET_INDEX_2] == Rules.games_per_set) {
                 if ((player2_set[SET_INDEX_2] - player1_set[SET_INDEX_2]) > 1) {
                     // >>>> GANHOU O SET POR 2 OU MAIS GAMES <<<<<
                     player2_sets++;
                     if(player2_sets >= 2){ winner = PLAYER_ID_2;}
                     else {
                         current_set = 3;
-                        if(this.match_tiebreak){
-                            this.tiebreak = true; tiebreaking = true; this.points_to_win = this.points_matchTiebreak;
+                        if(Rules.match_tiebreak){
+                            Rules.tiebreak = true; tiebreaking = true; this.points_to_win = Rules.points_matchTiebreak;
                         }
                     }
                 } else if(player1_set[SET_INDEX_2] == player2_set[SET_INDEX_2]) { tiebreaking = true;}
             }
             if(current_set == 2){ CheckChangeSides((byte) SET_INDEX_2);}
         } else if (current_set == 3) {
-            if (!this.match_tiebreak) {
+            if (!Rules.match_tiebreak) {
                 player2_set[SET_INDEX_3] += n;
-                if (player2_set[SET_INDEX_3] > games_per_set) {
+                if (player2_set[SET_INDEX_3] > Rules.games_per_set) {
                     // >>>> GANHOU O JOGO TIE-BREAK <<<<<
                     // vai para o próximo JOGO
                     player2_sets++;
                     //winner = PLAYER_ID_2;
                     Stop(PLAYER_ID_2);
                     //current_set = 0;
-                } else if (player2_set[SET_INDEX_3] == games_per_set) {
+                } else if (player2_set[SET_INDEX_3] == Rules.games_per_set) {
                     if ((player2_set[SET_INDEX_3] - player1_set[SET_INDEX_3]) > 1) {
                         // >>>> GANHOU O SET POR 2 OU MAIS GAMES <<<<<
                         player2_sets++;
@@ -461,7 +476,7 @@ public class Scoreboard implements Serializable {
 
     //----------------------------------------------------------------------------------------------
     public void ScoreIncrement(int player_id) {
-        if(tiebreak && tiebreaking){
+        if(Rules.tiebreak && tiebreaking){
             TennisTiebreak(player_id);
         } else {
             TennisIncrement(player_id);
@@ -479,7 +494,7 @@ public class Scoreboard implements Serializable {
         int game = 0;
         if (player_id == PLAYER_ID_1) {
             if(++player1_points > POINT_40) {
-                if(!advantage) { game = player_id;}
+                if(!Rules.advantage) { game = player_id;}
                 else {
                     if(player2_points < POINT_40) { game = player_id;}
                     else if(player2_points == POINT_40){
@@ -495,7 +510,7 @@ public class Scoreboard implements Serializable {
 
         } else if (player_id == PLAYER_ID_2) {
             if (++player2_points > POINT_40) {
-                if(!advantage) { game = player_id;}
+                if(!Rules.advantage) { game = player_id;}
                 else {
                     if(player1_points < POINT_40) { game = player_id;}
                     else if(player1_points == POINT_40){
@@ -546,16 +561,16 @@ public class Scoreboard implements Serializable {
             player1_points = 0;
             player2_points = 0;
             SetIncrement1(1);
-            if( alternate_service){ ToggleServer();}
+            if( Rules.alternate_service){ ToggleServer();}
             tiebreaking = false;
         } else if(game == PLAYER_ID_2){
             player1_points = 0;
             player2_points = 0;
             SetIncrement2(1);
-            if( alternate_service){ ToggleServer();}
+            if( Rules.alternate_service){ ToggleServer();}
             tiebreaking = false;
         } else {
-            if(alternate_service) {
+            if(Rules.alternate_service) {
                 // check for court switch
                 if (((player1_points + player2_points) % 6) == 0) {
                     // SWITCH COURT SIDES EVENT
@@ -627,7 +642,7 @@ public class Scoreboard implements Serializable {
     //----------------------------------------------------------------------------------------------
     public void setSet(int player_id, int set_id, String value) {
         byte v = (byte)Integer.parseUnsignedInt(value);
-        if(v <= this.games_per_set+1){
+        if(v <= Rules.games_per_set+1){
             setSet(player_id, set_id, v);
         }
     }
@@ -643,7 +658,7 @@ public class Scoreboard implements Serializable {
     //----------------------------------------------------------------------------------------------
     public String getScore(int player_id) {
         String result = "";
-        if(tiebreak && tiebreaking){
+        if(Rules.tiebreak && tiebreaking){
             if (player_id == PLAYER_ID_1) { result = String.format(Locale.getDefault(), "%d", player1_points);}
             else if (player_id == PLAYER_ID_2) { result = String.format(Locale.getDefault(), "%d", player2_points);}
         } else {
@@ -698,7 +713,7 @@ public class Scoreboard implements Serializable {
     //----------------------------------------------------------------------------------------------
     public void UpdatePoints(int player_id) {
         // byte val = 0;
-        if((tiebreak)&&(tiebreaking)){
+        if((Rules.tiebreak)&&(tiebreaking)){
             // update tens and units
             if (player_id == PLAYER_ID_1) {
                 player1_tens = (byte) (player1_points / 10);
@@ -737,7 +752,7 @@ public class Scoreboard implements Serializable {
     //----------------------------------------------------------------------------------------------
     public String getUnits(int player_id) {
         String result = "";
-        if((tiebreak)&&(tiebreaking)){
+        if((Rules.tiebreak)&&(tiebreaking)){
             // update tens and units
             if (player_id == PLAYER_ID_1) {
                 result = String.valueOf(player1_units);
@@ -781,11 +796,11 @@ public class Scoreboard implements Serializable {
     public String getSet3(int player_id) {
         String result = " ";
         if (player_id == PLAYER_ID_1) {
-            if((current_set > SET_2) && !this.match_tiebreak){
+            if((current_set > SET_2) && !Rules.match_tiebreak){
                 result = String.valueOf(player1_set[SET_INDEX_3]);
             }
         } else if (player_id == PLAYER_ID_2) {
-            if((current_set > SET_2) && !this.match_tiebreak){
+            if((current_set > SET_2) && !Rules.match_tiebreak){
                 result = String.valueOf(player2_set[SET_INDEX_3]);
             }
         }
@@ -860,14 +875,16 @@ public class Scoreboard implements Serializable {
 
         // config params
         this.game_on = src.game_on;
-        this.tiebreak = src.tiebreak;
-        this.advantage = src.advantage;
-        this.match_tiebreak = src.match_tiebreak;
-        this.games_per_set = src.games_per_set;
-        this.points_per_game = src.points_per_game;
-        this.sets_per_match = src.sets_per_match;
-        this.points_matchTiebreak = src.points_matchTiebreak;
-        this.alternate_service = src.alternate_service;
+        Rules.SetMode(src.Rules.GetMode());
+        Rules.tiebreak = src.Rules.tiebreak;
+        Rules.advantage = src.Rules.advantage;
+
+        Rules.match_tiebreak = src.Rules.match_tiebreak;
+        Rules.games_per_set = src.Rules.games_per_set;
+        Rules.points_Tiebreak = src.Rules.points_Tiebreak;
+        Rules.sets_per_match = src.Rules.sets_per_match;
+        Rules.points_matchTiebreak = src.Rules.points_matchTiebreak;
+        Rules.alternate_service = src.Rules.alternate_service;
     }
 
     //----------------------------------------------------------------------------------------------
@@ -904,7 +921,7 @@ public class Scoreboard implements Serializable {
             dst.data[PARAM_PLAY2_SET2] = this.player2_set[SET_INDEX_2];
         }
         if(this.current_set > SET_2) {
-            if(!this.match_tiebreak) {
+            if(!Rules.match_tiebreak) {
                 dst.data[PARAM_PLAY1_SET3] = this.player1_set[SET_INDEX_3];
                 dst.data[PARAM_PLAY2_SET3] = this.player2_set[SET_INDEX_3];
             }

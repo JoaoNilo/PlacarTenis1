@@ -57,7 +57,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public static final int REQUEST_ENABLE_BT = 1;
     private final int REQUEST_CONNECTION_BT = 2;
 
-
     private final int SCORE_PARAMS_SIZE = 14;
     private final int TIMER_ID_DEBOUNCING = 1;
     private final int TIMER_ID_GAMEOVER = 2;

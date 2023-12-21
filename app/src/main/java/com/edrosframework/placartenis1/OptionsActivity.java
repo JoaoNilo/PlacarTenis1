@@ -4,20 +4,28 @@ package com.edrosframework.placartenis1;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Button;
-
-import androidx.navigation.ui.AppBarConfiguration;
+import android.widget.EditText;
 
 public class OptionsActivity extends AppCompatActivity {
 
-    private AppBarConfiguration appBarConfiguration;
+    //private AppBarConfiguration appBarConfiguration;
+    Button btTennis;
+    Button btBeachTennis;
+    Button btTableTennis;
+    Button btBeachVolley;
+    Button btFootvolley;
 
     Scoreboard MatchConfig;
     Button btTweaks;
+    EditText MessageBoard;
+    ScoreParameters TmpRules;
 
+    //----------------------------------------------------------------------------------------------
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,6 +35,10 @@ public class OptionsActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
         MatchConfig = (Scoreboard) intent.getSerializableExtra("Match");
+        TmpRules = new ScoreParameters();
+        TmpRules.SetMode(MatchConfig.Rules.GetMode());
+
+        MessageBoard = findViewById(R.id.em_message);
 
         //-------------------------------------------------------------
         // return to previous activity
@@ -56,6 +68,82 @@ public class OptionsActivity extends AppCompatActivity {
             i.putExtra("Match", MatchConfig);
             startActivityForResult(i, 10);
         });
+
+        //-------------------------------------------------------------
+        // selects one of the options
+        btTennis = findViewById(R.id.bt_tennis);
+        btTennis.setOnClickListener(view -> {
+            // selected option: Tennis
+            TmpRules.SetMode(ScoreParameters.MODE_ID_TENNIS);
+            MessageBoard.setText( TmpRules.ModeDescription());
+            HighlightOption(TmpRules.GetMode());
+        });
+
+        //-------------------------------------------------------------
+        // selects one of the options
+        btBeachTennis = findViewById(R.id.bt_beachtennis);
+        btBeachTennis.setOnClickListener(view -> {
+            // selected option: Tennis
+            TmpRules.SetMode(ScoreParameters.MODE_ID_BEACHTENNIS);
+            MessageBoard.setText( TmpRules.ModeDescription());
+            HighlightOption(TmpRules.GetMode());
+        });
+
+        //-------------------------------------------------------------
+        // selects one of the options
+        btTableTennis = findViewById(R.id.bt_tabletennis);
+        btTableTennis.setOnClickListener(view -> {
+            // selected option: Tennis
+            TmpRules.SetMode(ScoreParameters.MODE_ID_TABLETENNIS);
+            MessageBoard.setText( TmpRules.ModeDescription());
+            HighlightOption(TmpRules.GetMode());
+        });
+
+        //-------------------------------------------------------------
+        // selects one of the options
+        btBeachVolley = findViewById(R.id.bt_beachvolleyball);
+        btBeachVolley.setOnClickListener(view -> {
+            // selected option: Tennis
+            TmpRules.SetMode(ScoreParameters.MODE_ID_BEACHVOLLEY);
+            MessageBoard.setText( TmpRules.ModeDescription());
+            HighlightOption(TmpRules.GetMode());
+        });
+
+        //-------------------------------------------------------------
+        // selects one of the options
+        btFootvolley = findViewById(R.id.bt_footvolley);
+        btFootvolley.setOnClickListener(view -> {
+            // selected option: Tennis
+            TmpRules.SetMode(ScoreParameters.MODE_ID_FOOTVOLLEY);
+            MessageBoard.setText( TmpRules.ModeDescription());
+            HighlightOption(TmpRules.GetMode());
+        });
+    }
+
+    //----------------------------------------------------------------------------------------------
+    void HighlightOption(int m){
+        btTennis.setTextColor(Color.BLACK);
+        btBeachTennis.setTextColor(Color.BLACK);
+        btTableTennis.setTextColor(Color.BLACK);
+        btBeachVolley.setTextColor(Color.BLACK);
+        btFootvolley.setTextColor(Color.BLACK);
+        switch(m){
+            case ScoreParameters.MODE_ID_TENNIS:
+                btTennis.setTextColor(Color.BLUE);
+                break;
+            case ScoreParameters.MODE_ID_BEACHTENNIS:
+                btBeachTennis.setTextColor(Color.BLUE);
+                break;
+            case ScoreParameters.MODE_ID_TABLETENNIS:
+                btTableTennis.setTextColor(Color.BLUE);
+                break;
+            case ScoreParameters.MODE_ID_BEACHVOLLEY:
+                btBeachVolley.setTextColor(Color.BLUE);
+                break;
+            case ScoreParameters.MODE_ID_FOOTVOLLEY:
+                btFootvolley.setTextColor(Color.BLUE);
+                break;
+        }
     }
 
     //----------------------------------------------------------------------------------------------
@@ -81,11 +169,5 @@ public class OptionsActivity extends AppCompatActivity {
                 break;
         }
     }
-
-    /*@Override
-    public boolean onSupportNavigateUp() {
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_options);
-        return NavigationUI.navigateUp(navController, appBarConfiguration) || super.onSupportNavigateUp();
-    }*/
 }
 //==================================================================================================
