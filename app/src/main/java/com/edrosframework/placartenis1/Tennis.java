@@ -1,133 +1,44 @@
 //==================================================================================================
 package com.edrosframework.placartenis1;
 
-import android.annotation.SuppressLint;
-
-import java.io.Serializable;
-import java.util.EventListener;
+import java.util.Locale;
 
 //--------------------------------------------------------------------------------------------------
-public class Scoreboard implements Serializable {
+public class Tennis extends Scoreboard {
 
     //----------------------------------------------------------------------------------------------
-    public final int PLAYER_ID_NONE = 0;
-    public final int PLAYER_ID_1 = 1;
-    public final int PLAYER_ID_2 = 2;
-
-    // used as indexes for "player1_set[]"
-    public final byte SET_INDEX_1 = 0;
-    public final byte SET_INDEX_2 = 1;
-    public final byte SET_INDEX_3 = 2;
-
-    // used by "current_set"
-    public final byte SET_1 = 1;
-    public final byte SET_2 = 2;
-    public final byte SET_3 = 3;
-
-    //---------------------------------------------------
-    // Transport section: this data is sent to the scoreboard
-    protected byte player1_tens = 0;
-    protected byte player1_units = 0;
-    protected final byte[] player1_set = new byte[3];
-
-    protected byte player2_tens = 0;
-    protected byte player2_units = 0;
-    protected final byte[] player2_set = new byte[3];
-
-    protected byte match_flags = 0;
-
-    private byte match_seconds = 0;
-    private byte match_minutes = 0;
-    private byte match_hours = 0;
-
-    //---------------------------------------------------
-    // Game control variables
-    protected byte player1_points = 0;
-    protected byte player2_points = 0;
-    protected byte player1_sets = 0;
-    protected byte player2_sets = 0;
+    private final String[] Scores = {"00", "15", "30", "40", "Ad", "  "};
+    private final byte[] Tens  = {0x00, 0x01, 0x03, 0x04, 0x0A, 0x10};
+    private final byte[] Units = {0x00, 0x05, 0x00, 0x00, 0x0D, 0x10};
 
     //----------------------------------------------------------------------------------------------
-    protected byte current_set;
-    protected byte current_server;
-    protected boolean game_on = false;
-    protected boolean change_court = false;
-    protected boolean change_server = false;
-    protected boolean tiebreaking = false;
-    protected int points_to_win = 7;
-    protected int winner = 0;
-
-    ScoreParameters Rules;
-
-    //----------------------------------------------------------------------------------------------
-    public void setMode(int new_mode){
-        Rules.setMode(new_mode);
+    private int StringToIndex(String PointsString){
+        int result = -1;
+        switch(PointsString){
+            case "00": result = 0; break;
+            case "15": result = 1; break;
+            case "30": result = 2; break;
+            case "40": result = 3; break;
+            case "Ad": result = 4; break;
+            case "  ": result = 5; break;
+            default: break;
+        }
+        return result;
     }
 
     //----------------------------------------------------------------------------------------------
-    public int getMode(){
-        return(Rules.GetMode());
-    }
-
-    //----------------------------------------------------------------------------------------------
-    protected transient MyEventListener eventListener;
-
-    //----------------------------------------------------------------------------------------------
-    public void setEventListener(MyEventListener eventListener) {
-        this.eventListener = eventListener;
-    }
-
-    //----------------------------------------------------------------------------------------------
-    // Inner interface representing the event listener
-    public interface MyEventListener extends EventListener {
-        void onEvent();
-    }
-
-    //----------------------------------------------------------------------------------------------
-    public boolean isGameOn() {  return this.game_on;}
-
-    //----------------------------------------------------------------------------------------------
-    public boolean isTiebreaking() { return this.tiebreaking;}
-
-    //----------------------------------------------------------------------------------------------
-    public boolean isTiebreak() { return Rules.tiebreak;}
-
-    //----------------------------------------------------------------------------------------------
-    public void setTiebreak(boolean tiebreak) { Rules.tiebreak = tiebreak;}
-
-    //----------------------------------------------------------------------------------------------
-    public boolean isAdvantage() { return Rules.advantage;}
-
-    //----------------------------------------------------------------------------------------------
-    public void setAdvantage(boolean advantage) { Rules.advantage = advantage;}
-
-    //----------------------------------------------------------------------------------------------
-    public boolean isMatchTiebreak() { return Rules.match_tiebreak;}
-
-    //----------------------------------------------------------------------------------------------
-    public void setMatchTiebreak(boolean tennis_mode) { Rules.match_tiebreak = tennis_mode;}
-
-    //----------------------------------------------------------------------------------------------
+    @Override
     public void setMatchTiebreakPoints(int points) {
         if(points > 80){ points = 80;}
         Rules.points_matchTiebreak = points;
     }
 
     //----------------------------------------------------------------------------------------------
-    public int getMatchTiebreakPoints() {
-        return Rules.points_matchTiebreak;
-    }
-
-    //----------------------------------------------------------------------------------------------
-    public boolean isAlternateService() { return Rules.alternate_service;}
-
-    //----------------------------------------------------------------------------------------------
+    @Override
     public void setAlternateService(boolean alternate_service) { Rules.alternate_service = alternate_service;}
 
     //----------------------------------------------------------------------------------------------
-    public int getGamesPerSet() { return Rules.games_per_set;}
-
-    //----------------------------------------------------------------------------------------------
+    @Override
     public void setGamesPerSet(int games_set) {
         if(games_set < 1){ Rules.games_per_set = 1;}
         else if(games_set > 8){ Rules.games_per_set = 8;}
@@ -135,11 +46,7 @@ public class Scoreboard implements Serializable {
     }
 
     //----------------------------------------------------------------------------------------------
-    public int getPointsPerGame() {
-        return Rules.points_Tiebreak;
-    }
-
-    //----------------------------------------------------------------------------------------------
+    @Override
     public void setPointsPerGame(int new_points_per_game) {
         if(new_points_per_game < 2){ Rules.points_Tiebreak = 2;}
         else if(new_points_per_game > 98){ Rules.points_Tiebreak = 98;}
@@ -147,11 +54,7 @@ public class Scoreboard implements Serializable {
     }
 
     //----------------------------------------------------------------------------------------------
-    public int getSetsPerMatch() {
-        return Rules.sets_per_match;
-    }
-
-    //----------------------------------------------------------------------------------------------
+    @Override
     public void setSetsPerMatch(int sets_per_match) {
         if(sets_per_match < 1){ Rules.sets_per_match = 1;}
         else if(sets_per_match > 3){ Rules.sets_per_match = 3;}
@@ -159,19 +62,10 @@ public class Scoreboard implements Serializable {
     }
 
     //----------------------------------------------------------------------------------------------
-    public boolean isServerChange() { return this.change_server;}
-
-    //----------------------------------------------------------------------------------------------
-    public boolean isCourtChange() { return this.change_court;}
-
-    //----------------------------------------------------------------------------------------------
-    public int getWinner() { return this.winner;}
-
-    //----------------------------------------------------------------------------------------------
     // MAIN CONSTRUCTOR
     //----------------------------------------------------------------------------------------------
-    public Scoreboard(ScoreParameters r) {
-        Rules = r;
+    public Tennis(ScoreParameters set_rules) {
+        super(set_rules);
         Restart();
     }
 
@@ -212,6 +106,7 @@ public class Scoreboard implements Serializable {
 
     //----------------------------------------------------------------------------------------------
     // retrieve match winner if match is finished
+    @Override
     public byte CheckMatch() {
         byte result = PLAYER_ID_NONE;
         player1_sets = 0; player2_sets = 0;
@@ -266,28 +161,6 @@ public class Scoreboard implements Serializable {
         this.points_to_win = Rules.points_Tiebreak;
         this.tiebreaking = false;
 
-    }
-
-    //----------------------------------------------------------------------------------------------
-    // Starts the game. No further "settings change" area allowed during the ongoing match.
-    public void Start() {
-        game_on = true;
-        this.current_set = 1;
-        setCurrentServer((byte) PLAYER_ID_1);
-    }
-
-    //----------------------------------------------------------------------------------------------
-    public void Stop(int player_id) {
-        game_on = false;
-        this.winner = player_id;
-        this.current_server = 0;
-        player1_points = 0;
-        player1_tens = 0x10;
-        player1_units = 0x10;
-        player2_points = 0;
-        player2_tens = 0x10;
-        player2_units = 0x10;
-        setMatchFlags((byte)PLAYER_ID_NONE);
     }
 
     //----------------------------------------------------------------------------------------------
@@ -432,10 +305,156 @@ public class Scoreboard implements Serializable {
     }
 
     //----------------------------------------------------------------------------------------------
-    public void ScoreIncrement(int player_id) {}
+    public void ScoreIncrement(int player_id) {
+
+        if((Rules.GetMode() == ScoreParameters.MODE_ID_BEACHTENNIS)||
+                (Rules.GetMode() == ScoreParameters.MODE_ID_TENNIS)) {
+            if (Rules.tiebreak && tiebreaking) {
+                TennisTiebreak(player_id);
+            } else {
+                TennisIncrement(player_id);
+            }
+        } else {
+            TennisTiebreak(player_id);
+        }
+    }
 
     //----------------------------------------------------------------------------------------------
+    private static final int POINT_00 = 0;
+    private static final int POINT_15 = 1;
+    private static final int POINT_30 = 2;
+    private static final int POINT_40 = 3;
+    private static final int POINT_AD = 4;
+    private static final int POINT_NO = 5;
+    private void TennisIncrement(int player_id) {
+        int game = 0;
+        if (player_id == PLAYER_ID_1) {
+            if(++player1_points > POINT_40) {
+                if(!Rules.advantage) { game = player_id;}
+                else {
+                    if(player2_points < POINT_40) { game = player_id;}
+                    else if(player2_points == POINT_40){
+                        // player1 advantage
+                        player2_points = POINT_NO;
+                    } else if(player2_points == POINT_AD){
+                        // deuce
+                        player1_points = POINT_40;
+                        player2_points = POINT_40;
+                    } else { game = player_id;}
+                }
+            }
+
+        } else if (player_id == PLAYER_ID_2) {
+            if (++player2_points > POINT_40) {
+                if(!Rules.advantage) { game = player_id;}
+                else {
+                    if(player1_points < POINT_40) { game = player_id;}
+                    else if(player1_points == POINT_40){
+                        // player2 advantage
+                        player1_points = POINT_NO;
+                    } else if(player1_points == POINT_AD){
+                        // deuce
+                        player1_points = POINT_40;
+                        player2_points = POINT_40;
+                    } else { game = player_id;}
+                }
+            }
+        }
+
+        if(game == PLAYER_ID_1){
+            player1_points = 0;
+            player2_points = 0;
+            SetIncrement1(1);
+            ToggleServer();
+        } else if(game == PLAYER_ID_2){
+            player1_points = 0;
+            player2_points = 0;
+            SetIncrement2(1);
+            ToggleServer();
+        }
+
+        if(this.game_on) {
+            // update tens and units
+            UpdatePoints(PLAYER_ID_1);
+            UpdatePoints(PLAYER_ID_2);
+        }
+    }
+
+    //----------------------------------------------------------------------------------------------
+    private void TennisTiebreak(int player_id) {
+        int game = 0;
+        if (player_id == PLAYER_ID_1) {
+            if(++player1_points >= points_to_win) {
+                if(player1_points-player2_points > 1) { game = player_id;}
+            }
+        } else if (player_id == PLAYER_ID_2) {
+            if(++player2_points >= points_to_win) {
+                if(player2_points-player1_points > 1) { game = player_id;}
+            }
+        }
+
+        if(game == PLAYER_ID_1){
+            player1_points = 0;
+            player2_points = 0;
+            SetIncrement1(1);
+            if( Rules.alternate_service){ ToggleServer();}
+            tiebreaking = false;
+        } else if(game == PLAYER_ID_2){
+            player1_points = 0;
+            player2_points = 0;
+            SetIncrement2(1);
+            if( Rules.alternate_service){ ToggleServer();}
+            tiebreaking = false;
+        } else {
+            if(Rules.alternate_service) {
+                // check for court switch
+                if (((player1_points + player2_points) % 6) == 0) {
+                    // SWITCH COURT SIDES EVENT
+                    // Trigger the event listener if it's not null
+                    if (eventListener != null) {
+                        change_court = true;
+                        eventListener.onEvent();
+                        change_court = false;
+                    }
+                }
+                // check for service switch
+                if (((player1_points + player2_points) % 2) == 1) {
+                    // SWITCH SERVICE FLAG
+                    ToggleServer();
+                    // Trigger the event listener if it's not null
+                    if (eventListener != null) {
+                        change_server = true;
+                        eventListener.onEvent();
+                        change_server = false;
+                    }
+                }
+            }
+        }
+
+        if(this.game_on) {
+            // update tens and units
+            UpdatePoints(PLAYER_ID_1);
+            UpdatePoints(PLAYER_ID_2);
+        }
+
+    }
+
+    //----------------------------------------------------------------------------------------------
+    @Override
     public void ScoreDecrement(int player_id) {
+        if (player_id == PLAYER_ID_1) {
+            if (player1_points > 0) {
+                if(!tiebreaking && (player1_points == 5)){ return;}
+                if(!tiebreaking&& (player1_points == 4)){ player1_points = 3; player2_points = 3;}
+                else { player1_points--;}
+            }
+        } else {
+            if (player2_points > 0) {
+                if(!tiebreaking&& (player2_points == 5)){ return;}
+                if(!tiebreaking && (player2_points == 4)){ player2_points = 3; player1_points = 3;}
+                else { player2_points--;}
+            }
+        }
         // update tens and units
         UpdatePoints(PLAYER_ID_1);
         // update tens and units
@@ -443,37 +462,172 @@ public class Scoreboard implements Serializable {
     }
 
     //----------------------------------------------------------------------------------------------
-    public byte getCurrentSet() { return(current_set);}
+    @Override
+    public void setCurrentSet(byte value) {
+        if(value > SET_3){ value = SET_3;}
+        current_set = value;
+        if(current_set == SET_1) {
+            player1_set[SET_INDEX_2] = 0; player2_set[SET_INDEX_2] = 0;
+            player1_set[SET_INDEX_3] = 0; player2_set[SET_INDEX_3] = 0;
+        } else if(current_set == SET_2) {
+            player1_set[SET_INDEX_3] = 0; player2_set[SET_INDEX_3] = 0;
+        }
+    }
 
     //----------------------------------------------------------------------------------------------
-    public void setCurrentSet(byte value) {}
+    @Override
+    public void setSet(int player_id, int set_id, String value) {
+        byte v = (byte)Integer.parseUnsignedInt(value);
+        if(v <= Rules.games_per_set+1){
+            setSet(player_id, set_id, v);
+        }
+    }
 
     //----------------------------------------------------------------------------------------------
-    public void setSet(int player_id, int set_id, String value) {}
+    @Override
+    public void setSet(int player_id, int set_id, byte value) {
+        if((set_id >= SET_INDEX_1) && (set_id <= SET_INDEX_3)){
+            if (player_id == PLAYER_ID_1) { player1_set[set_id] = value;}
+            else if (player_id == PLAYER_ID_2) { player2_set[set_id] = value;}
+        }
+    }
 
     //----------------------------------------------------------------------------------------------
-    public void setSet(int player_id, int set_id, byte value) {}
+    @Override
+    public String getScore(int player_id) {
+        String result = "";
+        if(Rules.tiebreak && tiebreaking){
+            if (player_id == PLAYER_ID_1) { result = String.format(Locale.getDefault(), "%d", player1_points);}
+            else if (player_id == PLAYER_ID_2) { result = String.format(Locale.getDefault(), "%d", player2_points);}
+        } else {
+            if (player_id == PLAYER_ID_1) { result = Scores[player1_points];}
+            else if (player_id == PLAYER_ID_2) { result = Scores[player2_points];}
+        }
+        return (result);
+    }
 
     //----------------------------------------------------------------------------------------------
-    public String getScore(int player_id) { return ("");}
+    @Override
+    public byte setPoints(int player_id, byte value) {
+        byte result = 0;
+        if (player_id == PLAYER_ID_1) {
+            player1_points = value;
+            player1_tens = Tens[player1_points];
+            player1_units = Units[player1_points];
+        } else if (player_id == PLAYER_ID_2) {
+            player2_points = value;
+            player2_tens = Tens[player2_points];
+            player2_units = Units[player2_points];
+        }
+        return (result);
+    }
 
     //----------------------------------------------------------------------------------------------
-    public byte setPoints(int player_id, byte value) { return (0);}
+    @Override
+    public byte setPoints(int player_id, String value) {
+        byte result = 0;
+        if(!this.tiebreaking) {
+            int pt = StringToIndex(value);
+            if (player_id == PLAYER_ID_1) {
+                if (pt > 0) {
+                    player1_points = (byte) pt;
+                }
+                player1_tens = Tens[player1_points];
+                player1_units = Units[player1_points];
+            } else if (player_id == PLAYER_ID_2) {
+                if (pt > 0) {
+                    player2_points = (byte) pt;
+                }
+                player2_tens = Tens[player2_points];
+                player2_units = Units[player2_points];
+            }
+        } else {
+            int pt = Integer.parseUnsignedInt(value);
+            if (player_id == PLAYER_ID_1) { player1_points = (byte)pt;}
+            else if(player_id == PLAYER_ID_2) { player2_points = (byte)pt;}
+            UpdatePoints(player_id);
+        }
+        return (result);
+    }
 
     //----------------------------------------------------------------------------------------------
-    public byte setPoints(int player_id, String value) { return (0);}
+    @Override
+    public void UpdatePoints(int player_id) {
+        // byte val = 0;
+        if((Rules.GetMode() == ScoreParameters.MODE_ID_BEACHTENNIS)||
+                (Rules.GetMode() == ScoreParameters.MODE_ID_TENNIS)) {
+            if ((Rules.tiebreak) && (tiebreaking)) {
+                // update tens and units
+                if (player_id == PLAYER_ID_1) {
+                    player1_tens = (byte) (player1_points / 10);
+                    if (player1_tens == 0) {player1_tens = 0x10;}
+                    player1_units = (byte) (player1_points % 10);
+                } else if (player_id == PLAYER_ID_2) {
+                    player2_tens = (byte) (player2_points / 10);
+                    if (player2_tens == 0) {player2_tens = 0x10;}
+                    player2_units = (byte) (player2_points % 10);
+                }
+            } else {
+                if (player_id == PLAYER_ID_1) {
+                    player1_tens = Tens[player1_points];
+                    player1_units = Units[player1_points];
+                } else if (player_id == PLAYER_ID_2) {
+                    player2_tens = Tens[player2_points];
+                    player2_units = Units[player2_points];
+                }
+            }
+        } else {
+            // update tens and units
+            if (player_id == PLAYER_ID_1) {
+                player1_tens = (byte) (player1_points / 10);
+                if (player1_tens == 0) {player1_tens = 0x10;}
+                player1_units = (byte) (player1_points % 10);
+            } else if (player_id == PLAYER_ID_2) {
+                player2_tens = (byte) (player2_points / 10);
+                if (player2_tens == 0) {player2_tens = 0x10;}
+                player2_units = (byte) (player2_points % 10);
+            }
+        }
+    }
 
     //----------------------------------------------------------------------------------------------
-    public void UpdatePoints(int player_id) {}
+    @Override
+    public String getTens(int player_id) {
+        String result = "";
+        if (player_id == PLAYER_ID_1) {
+            if (player1_tens >= 0x10) { result = " ";}
+            else { result = String.format("%01X", player1_tens);}
+        } else if (player_id == PLAYER_ID_2) {
+            if (player2_tens >= 0x10) { result = " ";}
+            else { result = String.format("%01X", player2_tens);}
+        }
+        if(result == "D"){result = "d";}
+        return (result);
+    }
 
     //----------------------------------------------------------------------------------------------
-    public String getTens(int player_id) {  return ("");}
+    @Override
+    public String getUnits(int player_id) {
+        String result = "";
+        if((Rules.tiebreak)&&(tiebreaking)){
+            // update tens and units
+            if (player_id == PLAYER_ID_1) {
+                result = String.valueOf(player1_units);
+            } else if (player_id == PLAYER_ID_2) {
+                result = String.valueOf(player2_units);
+            }
+        } else {
+            if (player_id == PLAYER_ID_1) {
+                result = Scores[player1_points].substring(1, 2);
+            } else if (player_id == PLAYER_ID_2) {
+                result = Scores[player2_points].substring(1, 2);
+            }
+        }
+        return (result);
+    }
 
     //----------------------------------------------------------------------------------------------
-    public String getUnits(int player_id) { return ("");}
-
-    //----------------------------------------------------------------------------------------------
-    public String getSet1(int player_id) {
+    /*public String getSet1(int player_id) {
         String result = "";
         if (player_id == PLAYER_ID_1) {
             result = String.valueOf(player1_set[SET_INDEX_1]);
@@ -481,10 +635,10 @@ public class Scoreboard implements Serializable {
             result = String.valueOf(player2_set[SET_INDEX_1]);
         }
         return (result);
-    }
+    }*/
 
     //----------------------------------------------------------------------------------------------
-    public String getSet2(int player_id) {
+    /*public String getSet2(int player_id) {
         String result = " ";
 
         if (player_id == PLAYER_ID_1) {
@@ -493,10 +647,10 @@ public class Scoreboard implements Serializable {
             if(current_set > SET_1){ result = String.valueOf(player2_set[SET_INDEX_2]);}
         }
         return (result);
-    }
+    }*/
 
     //----------------------------------------------------------------------------------------------
-    public String getSet3(int player_id) {
+    /*public String getSet3(int player_id) {
         String result = " ";
         if (player_id == PLAYER_ID_1) {
             if((current_set > SET_2) && !Rules.match_tiebreak){
@@ -508,14 +662,16 @@ public class Scoreboard implements Serializable {
             }
         }
         return (result);
-    }
+    }*/
 
     //----------------------------------------------------------------------------------------------
+    @Override
     public byte getCurrentServer() {
         return current_server;
     }
 
     //----------------------------------------------------------------------------------------------
+    @Override
     public void setCurrentServer(byte current_server) {
         if ((current_server == (byte)PLAYER_ID_1) || (current_server == (byte)PLAYER_ID_2)) {
             this.current_server = current_server;
@@ -524,6 +680,7 @@ public class Scoreboard implements Serializable {
     }
 
     //----------------------------------------------------------------------------------------------
+    @Override
     public void ToggleServer() {
         if (current_server == (byte)PLAYER_ID_1) {
             this.current_server = (byte)PLAYER_ID_2;
@@ -534,6 +691,7 @@ public class Scoreboard implements Serializable {
     }
 
     //----------------------------------------------------------------------------------------------
+    @Override
     public void setMatchFlags(byte server_id) {
         //----------------------------------------------------------------------------------------------
         byte FLAG_SERVICE_MASK = (byte) 0xFC;
@@ -547,100 +705,5 @@ public class Scoreboard implements Serializable {
         }
     }
 
-    //----------------------------------------------------------------------------------------------
-    public void copy(Scoreboard src) {
-        //---------------------------------------------------
-        // Transport section: this data is sent to the scoreboard
-        this.player1_tens = src.player1_tens;
-        this.player1_units = src.player1_units;
-        this.player1_set[SET_INDEX_1] = src.player1_set[SET_INDEX_1];
-        this.player1_set[SET_INDEX_2] = src.player1_set[SET_INDEX_2];
-        this.player1_set[SET_INDEX_3] = src.player1_set[SET_INDEX_3];
-        this.player2_tens = src.player2_tens;
-        this.player2_units = src.player2_units;
-        this.player2_set[SET_INDEX_1] = src.player2_set[SET_INDEX_1];
-        this.player2_set[SET_INDEX_2] = src.player2_set[SET_INDEX_2];
-        this.player2_set[SET_INDEX_3] = src.player2_set[SET_INDEX_3];
-        this.match_flags = src.match_flags;
-        this.match_seconds = src.match_seconds;
-        this.match_minutes = src.match_minutes;
-        this.match_hours = src.match_hours;
-
-        this.player1_points = src.player1_points;
-        this.player2_points = src.player2_points;
-        this.player1_sets = src.player1_sets;
-        this.player2_sets = src.player2_sets;
-
-        this.current_set = src.current_set;
-        this.current_server = src.current_server;
-        this.tiebreaking = src.tiebreaking;
-        this.points_to_win = src.points_to_win;
-
-        // config params
-        this.game_on = src.game_on;
-        Rules.copy(src.Rules);
-    }
-
-    //----------------------------------------------------------------------------------------------
-    public void Export(CommBuffer dst) {
-        int PARAM_PLAY1_TENS    = 0;
-        int PARAM_PLAY1_UNITS   = 1;
-        int PARAM_PLAY1_SET1    = 2;
-        int PARAM_PLAY1_SET2    = 3;
-        int PARAM_PLAY1_SET3    = 4;
-        int PARAM_PLAY2_TENS    = 5;
-        int PARAM_PLAY2_UNITS   = 6;
-        int PARAM_PLAY2_SET1    = 7;
-        int PARAM_PLAY2_SET2    = 8;
-        int PARAM_PLAY2_SET3    = 9;
-        int PARAM_FLAGS         = 10;
-        int PARAM_SECONDS       = 11;
-        int PARAM_MINUTES       = 12;
-        int PARAM_HOURS         = 13;
-
-        //---------------------------------------------------
-        // Transport section: this data is sent to the scoreboard
-        dst.data[PARAM_PLAY1_TENS]  = this.player1_tens;
-        dst.data[PARAM_PLAY2_TENS]  = this.player2_tens;
-        dst.data[PARAM_PLAY1_UNITS] = this.player1_units;
-        dst.data[PARAM_PLAY2_UNITS] = this.player2_units;
-        dst.data[PARAM_PLAY1_SET1] = this.player1_set[SET_INDEX_1];
-        dst.data[PARAM_PLAY2_SET1] = this.player2_set[SET_INDEX_1];
-        dst.data[PARAM_PLAY1_SET2] = 0x10;
-        dst.data[PARAM_PLAY2_SET2] = 0x10;
-        dst.data[PARAM_PLAY1_SET3] = 0x10;
-        dst.data[PARAM_PLAY2_SET3] = 0x10;
-        if(this.current_set > SET_1) {
-            dst.data[PARAM_PLAY1_SET2] = this.player1_set[SET_INDEX_2];
-            dst.data[PARAM_PLAY2_SET2] = this.player2_set[SET_INDEX_2];
-        }
-        if(this.current_set > SET_2) {
-            if(!Rules.match_tiebreak) {
-                dst.data[PARAM_PLAY1_SET3] = this.player1_set[SET_INDEX_3];
-                dst.data[PARAM_PLAY2_SET3] = this.player2_set[SET_INDEX_3];
-            }
-        }
-        dst.data[PARAM_FLAGS] = this.match_flags;
-        dst.data[PARAM_HOURS] = this.match_seconds;
-        dst.data[PARAM_MINUTES] = this.match_minutes;
-        dst.data[PARAM_SECONDS] = this.match_hours;
-    }
-
-    //----------------------------------------------------------------------------------------------
-    // format timer string
-    @SuppressLint("DefaultLocale")
-    private String formatTime(int seconds, int minutes, int hours) {
-        return (String.format("%02d", hours) + ":" + String.format("%02d", minutes));// + " : " + String.format("%02d",seconds));
-    }
-
-    //----------------------------------------------------------------------------------------------
-    // formats the timer string
-    public String getTimerText(double time) {
-        int rounded = (int) Math.round(time);
-        match_seconds = (byte)(((rounded % 86400) % 3600) % 60);
-        match_minutes = (byte)(((rounded % 86400) % 3600) / 60);
-        match_hours = (byte)((rounded % 86400) / 3600);
-        return formatTime(match_seconds, match_minutes, match_hours);
-    }
 }
 //==================================================================================================

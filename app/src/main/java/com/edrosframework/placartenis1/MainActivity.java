@@ -54,15 +54,17 @@ import java.util.UUID;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, NTimerListener{
 
-    public static final int REQUEST_ENABLE_BT = 1;
-    private final int REQUEST_CONNECTION_BT = 2;
+    private static final int REQUEST_ENABLE_BT              = 1;
+    private static final int REQUEST_CONNECTION_BT          = 2;
+    private static final int REQUEST_GAMESETTINGS_ACTIVITY  = 3;
+    private static final int REQUEST_OPTIONS_ACTIVITY       = 4;
 
-    private final int SCORE_PARAMS_SIZE = 14;
-    private final int TIMER_ID_DEBOUNCING = 1;
-    private final int TIMER_ID_GAMEOVER = 2;
+    private final int SCORE_PARAMS_SIZE     = 14;
+    private final int TIMER_ID_DEBOUNCING   = 1;
+    private final int TIMER_ID_GAMEOVER     = 2;
 
     private boolean isDoubleClick = false;
-    private static final long DOUBLE_CLICK_DELAY = 300; // Delay in milliseconds
+    private static final long DOUBLE_CLICK_DELAY = 300; // (ms)
 
     private int counter_tx;
     private int counter_rx;
@@ -111,7 +113,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Drawable arrow_on2;
 
     ScoreHardware ScoreHealth;
+
+    ScoreParameters Rules;
     Scoreboard Match;
+    //Tennis Match;
 
     //---------------------------------------------------
     // time base for Dispatch/Reload/Timeout
@@ -546,6 +551,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         RefreshScreen();
     }
 
+    //--------------------------------------------------------------------------
+    // change sport based on "Match.GetMode()"
+    public void SwitchSport(int _mode_){
+        switch (_mode_) {
+            case ScoreParameters.MODE_ID_TENNIS:
+            case ScoreParameters.MODE_ID_BEACHTENNIS:
+                Match = new Tennis(Match.Rules);
+                break;
+            case ScoreParameters.MODE_ID_TABLETENNIS:
+                break;
+            case ScoreParameters.MODE_ID_BEACHVOLLEY:
+                break;
+            case ScoreParameters.MODE_ID_FOOTVOLLEY:
+                break;
+        }
+    }
+
     //----------------------------------------------------------------------------------------------
     // MainActivity entry point
     //----------------------------------------------------------------------------------------------
@@ -629,7 +651,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         ScoreHealth = new ScoreHardware();
 
         //---------------------------------------------------------------
-        Match = new Scoreboard();
+        Rules = new ScoreParameters();
+        Match = new Scoreboard(Rules);
         //Match.setEventListener(new Scoreboard.MyEventListener() {
         Match.setEventListener(() -> {
             if(Match.getWinner() == 0) {
@@ -664,6 +687,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Debouncing = new NTimer(this, TIMER_ID_DEBOUNCING);
         GameOver = new NTimer(this, TIMER_ID_GAMEOVER);
 
+        SwitchSport(Match.getMode());
 
         //-------------------------------------------------------------
         // Player 1 increase score
@@ -798,14 +822,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             btConfig.setVisibility(View.INVISIBLE);
 
             Intent i;
+            int reqCode;
             if(Match.isGameOn()) {
                 i = new Intent(MainActivity.this, GameSettings.class);
+                reqCode = REQUEST_GAMESETTINGS_ACTIVITY;
             } else {
                 i = new Intent(MainActivity.this, OptionsActivity.class);
+                reqCode = REQUEST_OPTIONS_ACTIVITY;
             }
 
             i.putExtra("Match", Match);
-            startActivityForResult(i, 10);
+            startActivityForResult(i, reqCode);
         });
 
         //------------------------------------------------------------
@@ -1029,7 +1056,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             //------------------------------------------------------------------
             // SETTINGS ACTIVITY: Check for settings or game da updates
             //------------------------------------------------------------------
-            case 10:
+            case REQUEST_GAMESETTINGS_ACTIVITY:
                 btConfig.setVisibility(View.VISIBLE);
                 if(resultCode == RESULT_OK) {
                     //String result = data.getStringExtra("result");
@@ -1040,6 +1067,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         Match.UpdatePoints(Match.PLAYER_ID_2);
                         RefreshScreen();
                         if(Match.CheckMatch() != Match.PLAYER_ID_NONE){
+                            GameOver.startTimer(500);
+                        }
+
+                        //txtMode.setText(Match.Rules.ToString());
+                    }
+                }
+                break;
+
+            //------------------------------------------------------------------
+            // OPTIONS ACTIVITY: Check for sport selection
+            //------------------------------------------------------------------
+            case REQUEST_OPTIONS_ACTIVITY:
+                btConfig.setVisibility(View.VISIBLE);
+                if(resultCode == RESULT_OK) {
+                    if(data != null) {
+                        Scoreboard MatchConfig = (Scoreboard) data.getSerializableExtra("MatchConfig");
+                        int current_mode = Match.getMode();
+                        Match.copy(MatchConfig);
+                        Match.UpdatePoints(Match.PLAYER_ID_1);
+                        Match.UpdatePoints(Match.PLAYER_ID_2);
+                        RefreshScreen();
+                        if(Match.CheckMatch() != current_mode){
+                            SwitchSport(Match.getMode());
                             GameOver.startTimer(500);
                         }
 

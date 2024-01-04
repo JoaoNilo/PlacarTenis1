@@ -56,12 +56,12 @@ public class ScoreParameters implements Serializable {
                 mode = new_mode;
                 advantage = true;
                 tiebreak = true;
-                match_tiebreak = true;
+                match_tiebreak = false;
                 alternate_service = true;
                 points_Tiebreak = 7;
                 games_per_set = 6;
                 sets_per_match = 3;
-                points_matchTiebreak = 10;
+                points_matchTiebreak = 0;
                 break;
 
             case MODE_ID_BEACHTENNIS:
