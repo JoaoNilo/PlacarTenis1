@@ -881,16 +881,16 @@ public class Scoreboard implements Serializable {
 
         // config params
         this.game_on = src.game_on;
-        Rules.SetMode(src.Rules.GetMode());
+        Rules.copy(src.Rules);
+        /*Rules.setMode(src.Rules.GetMode());
         Rules.tiebreak = src.Rules.tiebreak;
         Rules.advantage = src.Rules.advantage;
-
         Rules.match_tiebreak = src.Rules.match_tiebreak;
         Rules.games_per_set = src.Rules.games_per_set;
         Rules.points_Tiebreak = src.Rules.points_Tiebreak;
         Rules.sets_per_match = src.Rules.sets_per_match;
         Rules.points_matchTiebreak = src.Rules.points_matchTiebreak;
-        Rules.alternate_service = src.Rules.alternate_service;
+        Rules.alternate_service = src.Rules.alternate_service;*/
     }
 
     //----------------------------------------------------------------------------------------------

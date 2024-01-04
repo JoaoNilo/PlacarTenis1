@@ -62,6 +62,7 @@ public class OptionsActivity extends AppCompatActivity {
                 SharedPreferences sharedPreferences = getSharedPreferences("PLT-01", Context.MODE_PRIVATE);
                 SharedPreferences.Editor settings = sharedPreferences.edit();
                 // Save the app settings
+                MatchConfig.Rules.copy(TmpRules);
                 settings.putInt("Mode", MatchConfig.getMode());
                 settings.putInt("GamesPerSet", MatchConfig.getGamesPerSet());
                 settings.putInt("PointsPerGame", MatchConfig.getPointsPerGame());

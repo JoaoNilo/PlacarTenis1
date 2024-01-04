@@ -26,6 +26,19 @@ public class ScoreParameters implements Serializable {
     public int points_matchTiebreak;
 
     //--------------------------------------------------------------------------
+    public void copy(ScoreParameters xParams){
+        advantage = xParams.advantage;
+        tiebreak = xParams.tiebreak;
+        match_tiebreak = xParams.match_tiebreak;
+        alternate_service = xParams.alternate_service;
+        mode = xParams.GetMode();
+        points_Tiebreak = xParams.points_Tiebreak;
+        games_per_set = xParams.games_per_set;
+        sets_per_match = xParams.sets_per_match;
+        points_matchTiebreak = xParams.points_matchTiebreak;
+    }
+
+    //--------------------------------------------------------------------------
     public ScoreParameters(){
         SetMode(MODE_ID_TENNIS);
     }
