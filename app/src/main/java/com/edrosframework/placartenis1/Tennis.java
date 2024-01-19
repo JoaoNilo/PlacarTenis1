@@ -74,31 +74,32 @@ public class Tennis extends Scoreboard {
     public byte CheckSet(int set_id) {
         byte result = 0; this.tiebreaking = false;
         // tiebreak game victory
-        if(player1_set[set_id] > Rules.games_per_set){
-            result = PLAYER_ID_1; player2_set[set_id] = (byte)Rules.games_per_set;
-        } else if(player2_set[set_id] > Rules.games_per_set){
-            result = PLAYER_ID_2; player1_set[set_id] = (byte)Rules.games_per_set;
+        if(player_set[PLAYER_ID_1][set_id] > Rules.games_per_set){
+            result = PLAYER_ID_1; player_set[PLAYER_ID_2][set_id] = (byte)Rules.games_per_set;
+        } else if(player_set[PLAYER_ID_2][set_id] > Rules.games_per_set){
+            result = PLAYER_ID_2; player_set[PLAYER_ID_1][set_id] = (byte)Rules.games_per_set;
         }
 
         // simple game victory
-        if((player1_set[set_id] == Rules.games_per_set) && ((player1_set[set_id]-player2_set[set_id])>1)){
+        if((player_set[PLAYER_ID_1][set_id] == Rules.games_per_set) && ((player_set[PLAYER_ID_1][set_id]-player_set[PLAYER_ID_2][set_id])>1)){
             result = PLAYER_ID_1;
-        } else if((player2_set[set_id] == Rules.games_per_set) && ((player2_set[set_id]-player1_set[set_id])>1)){
+        } else if((player_set[PLAYER_ID_2][set_id] == Rules.games_per_set) && ((player_set[PLAYER_ID_2][set_id]-player_set[PLAYER_ID_1][set_id])>1)){
             result = PLAYER_ID_2;
         }
 
         // check for tiebreaks (both modes)
-        if((player1_set[set_id] == Rules.games_per_set) && (player2_set[set_id] == Rules.games_per_set)){
+        if((player_set[PLAYER_ID_1][set_id] == Rules.games_per_set) && (player_set[PLAYER_ID_1][set_id] == Rules.games_per_set)){
             this.tiebreaking = true;
         }
 
         // "special case" game victory (prepare for match tiebreak)
+        // NOTE: only "beach tennis pro"
         if(set_id == SET_INDEX_3){
             if(Rules.match_tiebreak){
                 this.tiebreaking = true;
                 this.points_to_win = Rules.points_matchTiebreak;
-                if(player1_set[set_id] == 1) { result = PLAYER_ID_1;}
-                else if(player2_set[set_id] == 1) { result = PLAYER_ID_2;}
+                if(player_set[PLAYER_ID_1][set_id] == 1) { result = PLAYER_ID_1;}
+                else if(player_set[PLAYER_ID_2][set_id] == 1) { result = PLAYER_ID_2;}
             }
         }
         return result;
@@ -109,22 +110,24 @@ public class Tennis extends Scoreboard {
     @Override
     public byte CheckMatch() {
         byte result = PLAYER_ID_NONE;
-        player1_sets = 0; player2_sets = 0;
+        player_sets[PLAYER_ID_1] = 0; player_sets[PLAYER_ID_2] = 0;
         // compute won sets for both players
         for (byte c=0; c < Rules.sets_per_match; c++){
-            if(CheckSet(c) == PLAYER_ID_1){ player1_sets++;}
-            else if(CheckSet(c) == PLAYER_ID_2){ player2_sets++;}
+            result = CheckSet(c);
+            if((result == PLAYER_ID_1)||(result == PLAYER_ID_2)){
+                player_sets[result]++;
+            }
         }
         // check for a winner
         int winner = (Rules.sets_per_match / 2) + 1;
-        if(player1_sets >= winner){ result = PLAYER_ID_1;}
-        else if(player2_sets >= winner){ result = PLAYER_ID_2;}
+        if(player_sets[PLAYER_ID_1] >= winner){ result = PLAYER_ID_1;}
+        else if(player_sets[PLAYER_ID_2] >= winner){ result = PLAYER_ID_2;}
         return(result);
     }
 
     //----------------------------------------------------------------------------------------------
     private void CheckChangeSides(byte set_id){
-        int sum = player1_set[set_id] + player2_set[set_id];
+        int sum = player_set[PLAYER_ID_1][set_id] + player_set[PLAYER_ID_2][set_id];
         int rest = sum % 2;
         if(rest == 1) {
             if (eventListener != null) {
@@ -137,21 +140,19 @@ public class Tennis extends Scoreboard {
 
     //----------------------------------------------------------------------------------------------
     public void Restart() {
-        player1_points = 0;
-        player1_sets = 0;
-        player1_tens = 0;
-        player1_units = 0;
-        player1_set[SET_INDEX_1] = 0;
-        player1_set[SET_INDEX_2] = 0;
-        player1_set[SET_INDEX_3] = 0;
-        player2_points = 0;
-        player2_sets = 0;
-        player2_tens = 0;
-        player2_units = 0;
-        player2_set[SET_INDEX_1] = 0;
-        player2_set[SET_INDEX_2] = 0;
-        player2_set[SET_INDEX_3] = 0;
+        player_points[PLAYER_ID_1] = 0;
+        player_sets[PLAYER_ID_1] = 0;
+        player_tens[PLAYER_ID_1] = 0;
+        player_units[PLAYER_ID_1] = 0;
+        player_points[PLAYER_ID_2] = 0;
+        player_sets[PLAYER_ID_2] = 0;
+        player_tens[PLAYER_ID_2] = 0;
+        player_units[PLAYER_ID_2] = 0;
         match_flags = 0;
+        for(int c=0; c<3; c++){
+            player_set[PLAYER_ID_1][c] = 0;
+            player_set[PLAYER_ID_2][c] = 0;
+        }
 
         // game control variables
         this.game_on = false;
@@ -164,158 +165,84 @@ public class Tennis extends Scoreboard {
     }
 
     //----------------------------------------------------------------------------------------------
-    private void SetIncrement1(int n) {
-        if (current_set == 1) {
-            player1_set[SET_INDEX_1] += n;
-            if (player1_set[SET_INDEX_1] > Rules.games_per_set) {
+    private void SetIncrement(int player_id, int n) {
+        int player_nid = PLAYER_ID_2;
+        if(player_id == PLAYER_ID_2){player_nid = PLAYER_ID_1;}
+        if (current_set == SET_1) {
+            player_set[player_id][SET_INDEX_1] += n;
+            if (player_set[player_id][SET_INDEX_1] > Rules.games_per_set) {
                 // >>>> GANHOU O SET NO TIE-BREAK <<<<<
                 // vai para o próximo set
-                player1_sets++;
+                player_sets[PLAYER_ID_1]++;
                 if(Rules.sets_per_match == 1){ winner = PLAYER_ID_1;}
                 else { current_set = 2;}
-            } else if (player1_set[SET_INDEX_1] == Rules.games_per_set) {
-                if ((player1_set[SET_INDEX_1] - player2_set[SET_INDEX_1]) > 1) {
+            } else if (player_set[player_id][SET_INDEX_1] == Rules.games_per_set) {
+                if ((player_set[player_id][SET_INDEX_1] - player_set[player_nid][SET_INDEX_1]) > 1) {
                     // >>>> GANHOU O SET POR 2 OU MAIS GAMES <<<<<
-                    player1_sets++;
+                    player_sets[PLAYER_ID_1]++;
                     if(Rules.sets_per_match == 1){ winner = PLAYER_ID_1;}
                     else { current_set = 2;}
-                } else if(player1_set[SET_INDEX_1] == player2_set[SET_INDEX_1]) { tiebreaking = true;}
+                } else if(player_set[player_id][SET_INDEX_1] == player_set[player_nid][SET_INDEX_1]) { tiebreaking = true;}
             }
             if(current_set == 1){ CheckChangeSides((byte) SET_INDEX_1);}
-        } else if (current_set == 2) {
-            player1_set[SET_INDEX_2] += n;
-            if (player1_set[SET_INDEX_2] > Rules.games_per_set) {
+        } else if (current_set == SET_2) {
+            player_set[player_id][SET_INDEX_2] += n;
+            if (player_set[player_id][SET_INDEX_2] > Rules.games_per_set) {
                 // >>>> GANHOU O SET NO TIE-BREAK <<<<<
                 // vai para o próximo set
-                player1_sets++;
-                if(player1_sets >= 2){ winner = PLAYER_ID_1;}
+                player_sets[player_id]++;
+                if(player_sets[player_id] >= 2){ winner = player_id;}
                 else {
                     current_set = 3;
                     if(Rules.match_tiebreak){
                         Rules.tiebreak = true; tiebreaking = true; this.points_to_win = Rules.points_matchTiebreak;
                     }
                 }
-            } else if (player1_set[SET_INDEX_2] == Rules.games_per_set) {
-                if ((player1_set[SET_INDEX_2] - player2_set[SET_INDEX_2]) > 1) {
+            } else if (player_set[player_id][SET_INDEX_2] == Rules.games_per_set) {
+                if ((player_set[player_id][SET_INDEX_2] - player_set[player_nid][SET_INDEX_2]) > 1) {
                     // >>>> GANHOU O SET POR 2 OU MAIS GAMES <<<<<
-                    player1_sets++;
-                    if(player1_sets >= 2){ winner = PLAYER_ID_1;}
+                    player_sets[player_id]++;
+                    if(player_sets[player_id] >= 2){ winner = player_id;}
                     else { current_set = 3;}
-                } else if(player1_set[SET_INDEX_2] == player2_set[SET_INDEX_2]) { tiebreaking = true;}
+                } else if(player_set[player_id][SET_INDEX_2] == player_set[player_nid][SET_INDEX_2]) { tiebreaking = true;}
             }
             if(current_set == 2){ CheckChangeSides((byte) SET_INDEX_2);}
-        } else if (current_set == 3) {
+        } else if (current_set == SET_3) {
             if (!Rules.match_tiebreak) {
-                player1_set[SET_INDEX_3] += n;
-                if (player1_set[SET_INDEX_3] > Rules.games_per_set) {
+                player_set[player_id][SET_INDEX_3] += n;
+                if (player_set[player_id][SET_INDEX_3] > Rules.games_per_set) {
                     // >>>> GANHOU O JOGO TIE-BREAK <<<<<
                     // vai para o próximo JOGO
-                    player1_sets++;
+                    player_sets[player_id]++;
                     //winner = PLAYER_ID_1;
-                    Stop(PLAYER_ID_1);
+                    Stop(player_id);
                     //current_set = 0;
-                } else if (player1_set[SET_INDEX_3] == Rules.games_per_set) {
-                    if ((player1_set[SET_INDEX_3] - player2_set[SET_INDEX_3]) > 1) {
+                } else if (player_set[player_id][SET_INDEX_3] == Rules.games_per_set) {
+                    if ((player_set[player_id][SET_INDEX_3] - player_set[player_nid][SET_INDEX_3]) > 1) {
                         // >>>> GANHOU O SET POR 2 OU MAIS GAMES <<<<<
-                        player1_sets++;
+                        player_sets[player_id]++;
                         //winner = PLAYER_ID_1;
-                        Stop(PLAYER_ID_1);
+                        Stop(player_id);
                        // current_set = 0;
-                    } else if(player1_set[SET_INDEX_3] == player2_set[SET_INDEX_3]) { tiebreaking = true;}
+                    } else if(player_set[player_id][SET_INDEX_3] == player_set[player_nid][SET_INDEX_3]) { tiebreaking = true;}
                 }
                 if(current_set == 3){ CheckChangeSides((byte) SET_INDEX_3);}
             } else {
-                ++player1_set[SET_INDEX_3]; winner = PLAYER_ID_1;
+                ++player_set[player_id][SET_INDEX_3]; winner = player_id;
                 if (eventListener != null) { eventListener.onEvent();}
                 return;
             }
         }
         if(this.winner > 0){ if(eventListener != null){ eventListener.onEvent();}}
-}
-
-    //----------------------------------------------------------------------------------------------
-    private void SetIncrement2(int n) {
-        if (current_set == 1) {
-            player2_set[SET_INDEX_1] += n;
-            if (player2_set[SET_INDEX_1] > Rules.games_per_set) {
-                // >>>> GANHOU O SET NO TIE-BREAK <<<<<
-                // vai para o próximo set
-                player2_sets++;
-                if(Rules.sets_per_match == 1){ winner = PLAYER_ID_2;}
-                else { current_set = 2;}
-            } else if (player2_set[SET_INDEX_1] == Rules.games_per_set) {
-                if ((player2_set[SET_INDEX_1] - player1_set[SET_INDEX_1]) > 1) {
-                    // >>>> GANHOU O SET POR 2 OU MAIS GAMES <<<<<
-                    player2_sets++;
-                    if(Rules.sets_per_match == 1){ winner = PLAYER_ID_2;}
-                    else { current_set = 2;}
-                } else if(player1_set[SET_INDEX_1] == player2_set[SET_INDEX_1]) { tiebreaking = true;}
-            }
-            if(current_set == 1){ CheckChangeSides((byte) SET_INDEX_1);}
-        } else if (current_set == 2) {
-            player2_set[SET_INDEX_2] += n;
-            if (player2_set[SET_INDEX_2] > Rules.games_per_set) {
-                // >>>> GANHOU O SET NO TIE-BREAK <<<<<
-                // vai para o próximo set
-                player2_sets++;
-                if(player2_sets >= 2){ winner = PLAYER_ID_2;}
-                else { current_set = 3;}
-            } else if (player2_set[SET_INDEX_2] == Rules.games_per_set) {
-                if ((player2_set[SET_INDEX_2] - player1_set[SET_INDEX_2]) > 1) {
-                    // >>>> GANHOU O SET POR 2 OU MAIS GAMES <<<<<
-                    player2_sets++;
-                    if(player2_sets >= 2){ winner = PLAYER_ID_2;}
-                    else {
-                        current_set = 3;
-                        if(Rules.match_tiebreak){
-                            Rules.tiebreak = true; tiebreaking = true; this.points_to_win = Rules.points_matchTiebreak;
-                        }
-                    }
-                } else if(player1_set[SET_INDEX_2] == player2_set[SET_INDEX_2]) { tiebreaking = true;}
-            }
-            if(current_set == 2){ CheckChangeSides((byte) SET_INDEX_2);}
-        } else if (current_set == 3) {
-            if (!Rules.match_tiebreak) {
-                player2_set[SET_INDEX_3] += n;
-                if (player2_set[SET_INDEX_3] > Rules.games_per_set) {
-                    // >>>> GANHOU O JOGO TIE-BREAK <<<<<
-                    // vai para o próximo JOGO
-                    player2_sets++;
-                    //winner = PLAYER_ID_2;
-                    Stop(PLAYER_ID_2);
-                    //current_set = 0;
-                } else if (player2_set[SET_INDEX_3] == Rules.games_per_set) {
-                    if ((player2_set[SET_INDEX_3] - player1_set[SET_INDEX_3]) > 1) {
-                        // >>>> GANHOU O SET POR 2 OU MAIS GAMES <<<<<
-                        player2_sets++;
-                        //winner = PLAYER_ID_2;
-                        Stop(PLAYER_ID_2);
-                        //current_set = 0;
-                    } else if (player1_set[SET_INDEX_3] == player2_set[SET_INDEX_3]) {
-                        tiebreaking = true;
-                    }
-                }
-                if (current_set == 3) { CheckChangeSides((byte) SET_INDEX_3);}
-            } else {
-                ++player2_set[SET_INDEX_3];  winner = PLAYER_ID_2;
-                if (eventListener != null) { eventListener.onEvent();}
-            }
-        }
-        if (this.winner > 0) { if (eventListener != null) { eventListener.onEvent();}}
     }
 
     //----------------------------------------------------------------------------------------------
     public void ScoreIncrement(int player_id) {
 
-        if((Rules.GetMode() == ScoreParameters.MODE_ID_BEACHTENNIS)||
-                (Rules.GetMode() == ScoreParameters.MODE_ID_TENNIS)) {
-            if (Rules.tiebreak && tiebreaking) {
-                TennisTiebreak(player_id);
-            } else {
-                TennisIncrement(player_id);
-            }
-        } else {
+        if (Rules.tiebreak && tiebreaking) {
             TennisTiebreak(player_id);
+        } else {
+            TennisIncrement(player_id);
         }
     }
 
@@ -329,47 +256,42 @@ public class Tennis extends Scoreboard {
     private void TennisIncrement(int player_id) {
         int game = 0;
         if (player_id == PLAYER_ID_1) {
-            if(++player1_points > POINT_40) {
+            if(++player_points[PLAYER_ID_1] > POINT_40) {
                 if(!Rules.advantage) { game = player_id;}
                 else {
-                    if(player2_points < POINT_40) { game = player_id;}
-                    else if(player2_points == POINT_40){
+                    if(player_points[PLAYER_ID_2] < POINT_40) { game = player_id;}
+                    else if(player_points[PLAYER_ID_2] == POINT_40){
                         // player1 advantage
-                        player2_points = POINT_NO;
-                    } else if(player2_points == POINT_AD){
+                        player_points[PLAYER_ID_2] = POINT_NO;
+                    } else if(player_points[PLAYER_ID_2] == POINT_AD){
                         // deuce
-                        player1_points = POINT_40;
-                        player2_points = POINT_40;
+                        player_points[PLAYER_ID_1] = POINT_40;
+                        player_points[PLAYER_ID_2] = POINT_40;
                     } else { game = player_id;}
                 }
             }
 
         } else if (player_id == PLAYER_ID_2) {
-            if (++player2_points > POINT_40) {
+            if (++player_points[PLAYER_ID_2] > POINT_40) {
                 if(!Rules.advantage) { game = player_id;}
                 else {
-                    if(player1_points < POINT_40) { game = player_id;}
-                    else if(player1_points == POINT_40){
+                    if(player_points[PLAYER_ID_1] < POINT_40) { game = player_id;}
+                    else if(player_points[PLAYER_ID_1] == POINT_40){
                         // player2 advantage
-                        player1_points = POINT_NO;
-                    } else if(player1_points == POINT_AD){
+                        player_points[PLAYER_ID_1] = POINT_NO;
+                    } else if(player_points[PLAYER_ID_1] == POINT_AD){
                         // deuce
-                        player1_points = POINT_40;
-                        player2_points = POINT_40;
+                        player_points[PLAYER_ID_1] = POINT_40;
+                        player_points[PLAYER_ID_2] = POINT_40;
                     } else { game = player_id;}
                 }
             }
         }
 
-        if(game == PLAYER_ID_1){
-            player1_points = 0;
-            player2_points = 0;
-            SetIncrement1(1);
-            ToggleServer();
-        } else if(game == PLAYER_ID_2){
-            player1_points = 0;
-            player2_points = 0;
-            SetIncrement2(1);
+        if((game == PLAYER_ID_1)||(game == PLAYER_ID_2)){
+            player_points[PLAYER_ID_1] = 0;
+            player_points[PLAYER_ID_2] = 0;
+            SetIncrement(game, 1);
             ToggleServer();
         }
 
@@ -384,31 +306,31 @@ public class Tennis extends Scoreboard {
     private void TennisTiebreak(int player_id) {
         int game = 0;
         if (player_id == PLAYER_ID_1) {
-            if(++player1_points >= points_to_win) {
-                if(player1_points-player2_points > 1) { game = player_id;}
+            if(++player_points[PLAYER_ID_1] >= points_to_win) {
+                if(player_points[PLAYER_ID_1]-player_points[PLAYER_ID_2] > 1) { game = player_id;}
             }
         } else if (player_id == PLAYER_ID_2) {
-            if(++player2_points >= points_to_win) {
-                if(player2_points-player1_points > 1) { game = player_id;}
+            if(++player_points[PLAYER_ID_2] >= points_to_win) {
+                if(player_points[PLAYER_ID_2]-player_points[PLAYER_ID_1] > 1) { game = player_id;}
             }
         }
 
         if(game == PLAYER_ID_1){
-            player1_points = 0;
-            player2_points = 0;
-            SetIncrement1(1);
+            player_points[PLAYER_ID_1] = 0;
+            player_points[PLAYER_ID_2] = 0;
+            SetIncrement(PLAYER_ID_1, 1);
             if( Rules.alternate_service){ ToggleServer();}
             tiebreaking = false;
         } else if(game == PLAYER_ID_2){
-            player1_points = 0;
-            player2_points = 0;
-            SetIncrement2(1);
+            player_points[PLAYER_ID_1] = 0;
+            player_points[PLAYER_ID_2] = 0;
+            SetIncrement(PLAYER_ID_2, 1);
             if( Rules.alternate_service){ ToggleServer();}
             tiebreaking = false;
         } else {
             if(Rules.alternate_service) {
                 // check for court switch
-                if (((player1_points + player2_points) % 6) == 0) {
+                if (((player_points[PLAYER_ID_1] + player_points[PLAYER_ID_2]) % 6) == 0) {
                     // SWITCH COURT SIDES EVENT
                     // Trigger the event listener if it's not null
                     if (eventListener != null) {
@@ -418,7 +340,7 @@ public class Tennis extends Scoreboard {
                     }
                 }
                 // check for service switch
-                if (((player1_points + player2_points) % 2) == 1) {
+                if (((player_points[PLAYER_ID_1] + player_points[PLAYER_ID_2]) % 2) == 1) {
                     // SWITCH SERVICE FLAG
                     ToggleServer();
                     // Trigger the event listener if it's not null
@@ -443,16 +365,16 @@ public class Tennis extends Scoreboard {
     @Override
     public void ScoreDecrement(int player_id) {
         if (player_id == PLAYER_ID_1) {
-            if (player1_points > 0) {
-                if(!tiebreaking && (player1_points == 5)){ return;}
-                if(!tiebreaking&& (player1_points == 4)){ player1_points = 3; player2_points = 3;}
-                else { player1_points--;}
+            if (player_points[PLAYER_ID_1] > 0) {
+                if(!tiebreaking && (player_points[PLAYER_ID_1] == 5)){ return;}
+                if(!tiebreaking&& (player_points[PLAYER_ID_1] == 4)){ player_points[PLAYER_ID_1] = 3; player_points[PLAYER_ID_2] = 3;}
+                else { player_points[PLAYER_ID_1]--;}
             }
         } else {
-            if (player2_points > 0) {
-                if(!tiebreaking&& (player2_points == 5)){ return;}
-                if(!tiebreaking && (player2_points == 4)){ player2_points = 3; player1_points = 3;}
-                else { player2_points--;}
+            if (player_points[PLAYER_ID_2] > 0) {
+                if(!tiebreaking&& (player_points[PLAYER_ID_2] == 5)){ return;}
+                if(!tiebreaking && (player_points[PLAYER_ID_2] == 4)){ player_points[PLAYER_ID_2] = 3; player_points[PLAYER_ID_1] = 3;}
+                else { player_points[PLAYER_ID_2]--;}
             }
         }
         // update tens and units
@@ -467,10 +389,10 @@ public class Tennis extends Scoreboard {
         if(value > SET_3){ value = SET_3;}
         current_set = value;
         if(current_set == SET_1) {
-            player1_set[SET_INDEX_2] = 0; player2_set[SET_INDEX_2] = 0;
-            player1_set[SET_INDEX_3] = 0; player2_set[SET_INDEX_3] = 0;
+            player_set[PLAYER_ID_1][SET_INDEX_2] = 0; player_set[PLAYER_ID_2][SET_INDEX_2] = 0;
+            player_set[PLAYER_ID_1][SET_INDEX_3] = 0; player_set[PLAYER_ID_2][SET_INDEX_3] = 0;
         } else if(current_set == SET_2) {
-            player1_set[SET_INDEX_3] = 0; player2_set[SET_INDEX_3] = 0;
+            player_set[PLAYER_ID_1][SET_INDEX_3] = 0; player_set[PLAYER_ID_2][SET_INDEX_3] = 0;
         }
     }
 
@@ -487,8 +409,7 @@ public class Tennis extends Scoreboard {
     @Override
     public void setSet(int player_id, int set_id, byte value) {
         if((set_id >= SET_INDEX_1) && (set_id <= SET_INDEX_3)){
-            if (player_id == PLAYER_ID_1) { player1_set[set_id] = value;}
-            else if (player_id == PLAYER_ID_2) { player2_set[set_id] = value;}
+            player_set[player_id][set_id] = value;
         }
     }
 
@@ -496,58 +417,48 @@ public class Tennis extends Scoreboard {
     @Override
     public String getScore(int player_id) {
         String result = "";
-        if(Rules.tiebreak && tiebreaking){
-            if (player_id == PLAYER_ID_1) { result = String.format(Locale.getDefault(), "%d", player1_points);}
-            else if (player_id == PLAYER_ID_2) { result = String.format(Locale.getDefault(), "%d", player2_points);}
-        } else {
-            if (player_id == PLAYER_ID_1) { result = Scores[player1_points];}
-            else if (player_id == PLAYER_ID_2) { result = Scores[player2_points];}
-        }
-        return (result);
-    }
-
-    //----------------------------------------------------------------------------------------------
-    @Override
-    public byte setPoints(int player_id, byte value) {
-        byte result = 0;
-        if (player_id == PLAYER_ID_1) {
-            player1_points = value;
-            player1_tens = Tens[player1_points];
-            player1_units = Units[player1_points];
-        } else if (player_id == PLAYER_ID_2) {
-            player2_points = value;
-            player2_tens = Tens[player2_points];
-            player2_units = Units[player2_points];
-        }
-        return (result);
-    }
-
-    //----------------------------------------------------------------------------------------------
-    @Override
-    public byte setPoints(int player_id, String value) {
-        byte result = 0;
-        if(!this.tiebreaking) {
-            int pt = StringToIndex(value);
-            if (player_id == PLAYER_ID_1) {
-                if (pt > 0) {
-                    player1_points = (byte) pt;
-                }
-                player1_tens = Tens[player1_points];
-                player1_units = Units[player1_points];
-            } else if (player_id == PLAYER_ID_2) {
-                if (pt > 0) {
-                    player2_points = (byte) pt;
-                }
-                player2_tens = Tens[player2_points];
-                player2_units = Units[player2_points];
+        if((player_id == PLAYER_ID_1)||(player_id == PLAYER_ID_2)) {
+            if (Rules.tiebreak && tiebreaking) {
+                result = String.format(Locale.getDefault(), "%d", player_points[player_id]);
+            } else {
+                result = Scores[player_points[player_id]];
             }
-        } else {
-            int pt = Integer.parseUnsignedInt(value);
-            if (player_id == PLAYER_ID_1) { player1_points = (byte)pt;}
-            else if(player_id == PLAYER_ID_2) { player2_points = (byte)pt;}
+        }
+        return (result);
+    }
+
+    //----------------------------------------------------------------------------------------------
+    @Override
+    public void setPoints(int player_id, byte value) {
+        byte result = 0;
+        if ((player_id == PLAYER_ID_1)||(player_id == PLAYER_ID_2)) {
+            player_points[player_id] = value;
+            player_tens[player_id] = Tens[player_points[player_id]];
+            player_units[PLAYER_ID_1] = Units[player_points[player_id]];
+        }
+        //return (result);
+    }
+
+    //----------------------------------------------------------------------------------------------
+    @Override
+    public void setPoints(int player_id, String value) {
+        byte result = 0;
+        if ((player_id == PLAYER_ID_1)||(player_id == PLAYER_ID_2)) {
+
+            if (!this.tiebreaking) {
+                int pt = StringToIndex(value);
+                if (pt > 0) {
+                    player_points[player_id] = (byte) pt;
+                }
+                player_tens[PLAYER_ID_2] = Tens[player_points[player_id]];
+                player_units[PLAYER_ID_2] = Units[player_points[player_id]];
+            } else {
+                int pt = Integer.parseUnsignedInt(value);
+                player_points[player_id] = (byte) pt;
+            }
             UpdatePoints(player_id);
         }
-        return (result);
+        //return (result);
     }
 
     //----------------------------------------------------------------------------------------------
@@ -559,33 +470,33 @@ public class Tennis extends Scoreboard {
             if ((Rules.tiebreak) && (tiebreaking)) {
                 // update tens and units
                 if (player_id == PLAYER_ID_1) {
-                    player1_tens = (byte) (player1_points / 10);
-                    if (player1_tens == 0) {player1_tens = 0x10;}
-                    player1_units = (byte) (player1_points % 10);
+                    player_tens[PLAYER_ID_1] = (byte) (player_points[player_id] / 10);
+                    if (player_tens[PLAYER_ID_1] == 0) {player_tens[PLAYER_ID_1] = 0x10;}
+                    player_units[PLAYER_ID_1] = (byte) (player_points[player_id] % 10);
                 } else if (player_id == PLAYER_ID_2) {
-                    player2_tens = (byte) (player2_points / 10);
-                    if (player2_tens == 0) {player2_tens = 0x10;}
-                    player2_units = (byte) (player2_points % 10);
+                    player_tens[PLAYER_ID_2] = (byte) (player_points[player_id] / 10);
+                    if (player_tens[PLAYER_ID_2] == 0) {player_tens[PLAYER_ID_2] = 0x10;}
+                    player_units[PLAYER_ID_2] = (byte) (player_points[player_id] % 10);
                 }
             } else {
                 if (player_id == PLAYER_ID_1) {
-                    player1_tens = Tens[player1_points];
-                    player1_units = Units[player1_points];
+                    player_tens[PLAYER_ID_1] = Tens[player_points[player_id]];
+                    player_units[PLAYER_ID_1] = Units[player_points[player_id]];
                 } else if (player_id == PLAYER_ID_2) {
-                    player2_tens = Tens[player2_points];
-                    player2_units = Units[player2_points];
+                    player_tens[PLAYER_ID_2] = Tens[player_points[player_id]];
+                    player_units[PLAYER_ID_2] = Units[player_points[player_id]];
                 }
             }
         } else {
             // update tens and units
             if (player_id == PLAYER_ID_1) {
-                player1_tens = (byte) (player1_points / 10);
-                if (player1_tens == 0) {player1_tens = 0x10;}
-                player1_units = (byte) (player1_points % 10);
+                player_tens[PLAYER_ID_1] = (byte) (player_points[player_id] / 10);
+                if (player_tens[PLAYER_ID_1] == 0) {player_tens[PLAYER_ID_1] = 0x10;}
+                player_units[PLAYER_ID_1] = (byte) (player_points[player_id] % 10);
             } else if (player_id == PLAYER_ID_2) {
-                player2_tens = (byte) (player2_points / 10);
-                if (player2_tens == 0) {player2_tens = 0x10;}
-                player2_units = (byte) (player2_points % 10);
+                player_tens[PLAYER_ID_2] = (byte) (player_points[player_id] / 10);
+                if (player_tens[PLAYER_ID_2] == 0) {player_tens[PLAYER_ID_2] = 0x10;}
+                player_units[PLAYER_ID_2] = (byte) (player_points[player_id] % 10);
             }
         }
     }
@@ -595,11 +506,11 @@ public class Tennis extends Scoreboard {
     public String getTens(int player_id) {
         String result = "";
         if (player_id == PLAYER_ID_1) {
-            if (player1_tens >= 0x10) { result = " ";}
-            else { result = String.format("%01X", player1_tens);}
+            if (player_tens[PLAYER_ID_1] >= 0x10) { result = " ";}
+            else { result = String.format("%01X", player_tens[PLAYER_ID_1]);}
         } else if (player_id == PLAYER_ID_2) {
-            if (player2_tens >= 0x10) { result = " ";}
-            else { result = String.format("%01X", player2_tens);}
+            if (player_tens[PLAYER_ID_2] >= 0x10) { result = " ";}
+            else { result = String.format("%01X", player_tens[PLAYER_ID_2]);}
         }
         if(result == "D"){result = "d";}
         return (result);
@@ -609,60 +520,20 @@ public class Tennis extends Scoreboard {
     @Override
     public String getUnits(int player_id) {
         String result = "";
-        if((Rules.tiebreak)&&(tiebreaking)){
-            // update tens and units
-            if (player_id == PLAYER_ID_1) {
-                result = String.valueOf(player1_units);
-            } else if (player_id == PLAYER_ID_2) {
-                result = String.valueOf(player2_units);
-            }
-        } else {
-            if (player_id == PLAYER_ID_1) {
-                result = Scores[player1_points].substring(1, 2);
-            } else if (player_id == PLAYER_ID_2) {
-                result = Scores[player2_points].substring(1, 2);
+        if((player_id == PLAYER_ID_1)||(player_id == PLAYER_ID_2)) {
+            if ((Rules.tiebreak) && (tiebreaking)) {
+                // update tens and units
+                if (player_id == PLAYER_ID_1) {
+                    result = String.valueOf(player_units[PLAYER_ID_1]);
+                } else {
+                    result = String.valueOf(player_units[PLAYER_ID_2]);
+                }
+            } else {
+                result = Scores[player_points[player_id]].substring(1, 2);
             }
         }
         return (result);
     }
-
-    //----------------------------------------------------------------------------------------------
-    /*public String getSet1(int player_id) {
-        String result = "";
-        if (player_id == PLAYER_ID_1) {
-            result = String.valueOf(player1_set[SET_INDEX_1]);
-        } else if (player_id == PLAYER_ID_2) {
-            result = String.valueOf(player2_set[SET_INDEX_1]);
-        }
-        return (result);
-    }*/
-
-    //----------------------------------------------------------------------------------------------
-    /*public String getSet2(int player_id) {
-        String result = " ";
-
-        if (player_id == PLAYER_ID_1) {
-            if(current_set > SET_1){ result = String.valueOf(player1_set[SET_INDEX_2]);}
-        } else if (player_id == PLAYER_ID_2) {
-            if(current_set > SET_1){ result = String.valueOf(player2_set[SET_INDEX_2]);}
-        }
-        return (result);
-    }*/
-
-    //----------------------------------------------------------------------------------------------
-    /*public String getSet3(int player_id) {
-        String result = " ";
-        if (player_id == PLAYER_ID_1) {
-            if((current_set > SET_2) && !Rules.match_tiebreak){
-                result = String.valueOf(player1_set[SET_INDEX_3]);
-            }
-        } else if (player_id == PLAYER_ID_2) {
-            if((current_set > SET_2) && !Rules.match_tiebreak){
-                result = String.valueOf(player2_set[SET_INDEX_3]);
-            }
-        }
-        return (result);
-    }*/
 
     //----------------------------------------------------------------------------------------------
     @Override
