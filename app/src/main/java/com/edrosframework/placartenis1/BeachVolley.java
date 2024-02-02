@@ -164,8 +164,6 @@ public class BeachVolley extends Scoreboard {
         } else { setCurrentServer((byte) player_id);}
 
         if(game == player_id){
-            player_points[player_id] = 0;
-            player_points[player_nid] = 0;
             SetIncrement(player_id, 1);
             if( Rules.alternate_service){ ToggleServer();}
         }
@@ -178,6 +176,12 @@ public class BeachVolley extends Scoreboard {
                 eventListener.onEvent();
                 change_court = false;
             }
+        }
+
+        // if there's no winner, clear the score
+        if((game == player_id) && (this.winner == PLAYER_ID_NONE)){
+            player_points[player_id] = 0;
+            player_points[player_nid] = 0;
         }
 
         if(this.game_on) {
